@@ -1,0 +1,114 @@
+#!/bin/bash
+###
+# Interpréteur olixsh
+# ==============================================================================
+# Usage : TODO
+#  olixsh
+# ------------------------------------------------------------------------------
+# Codes de sorties
+#  31 : Ne pas envoyer de mail même si le paramètre -m est renseigné
+# ------------------------------------------------------------------------------
+# @package olixsh
+# @author Olivier
+# @version 2.0
+# @created 06/04/2014
+##
+
+#set -e
+
+###
+# Constantes
+##
+OLIX_RELEASE=false
+OLIX_VERSION="2.0"
+OLIX_REVISION="1"
+
+
+
+###
+# Détermination où se trouve le framework pour s'y placer
+##
+if [ -L $0 ]; then
+    FILE_SHELL=$(readlink $0)
+else
+    FILE_SHELL=$0
+fi
+cd $(dirname $FILE_SHELL)
+
+
+###
+# Chargement des librairies
+##
+source lib/constant.inc.sh
+source lib/core.inc.sh
+source lib/color.inc.sh
+source lib/stdinout.inc.sh
+source lib/logger.inc.sh
+
+
+logger_checkLogger
+logger_debug "Version : ${OLIX_VERSION}, Revision : ${OLIX_REVISION}, Release : ${OLIX_RELEASE}"
+
+
+###
+# Gestion des options et arguments
+##
+OLIX_MODULE=""
+OLIX_ARGS=""
+logger_debug "Traitement des options de la ligne de commande"
+while [[ $# -ge 1 ]]; do
+    case $1 in
+        -d|--debug) 
+            OLIX_OPTION_VERBOSEDEBUG=true
+            OLIX_OPTION_VERBOSE=true
+            OLIX_LOGGER_LEVEL="debug"
+        ;;
+        -v|--verbose) 
+            OLIX_OPTION_VERBOSE=true
+            OLIX_LOGGER_LEVEL="info"
+        ;;
+        --no-warnings)
+            OLIX_OPTION_WARNINGS=false
+        ;;
+        -h|--help)
+            stdinout_printUsage
+        ;;
+        --version)
+           stdinout_printVersion
+           core_exit 0
+        ;;
+        
+        *)  if [[ -z ${OLIX_MODULE} ]]; then
+                OLIX_MODULE=$1
+            else
+                OLIX_ARGS="${OLIX_ARGS} $1"
+            fi
+            #break
+        ;;
+    esac
+    shift
+done
+
+logger_debug "Module #${OLIX_MODULE}#"
+logger_debug "Args #${OLIX_ARGS}#"
+
+###
+# Installation de OLIXSH
+##
+if [[ "${OLIX_MODULE}" == "install:olixsh" ]]; then
+    source modules/install-olixsh.sh
+    core_exit 0
+fi
+
+
+core_checkInstall
+
+# SI commande trouve
+
+
+stdinout_readChoiceModule
+
+
+
+logger_debug "${OLIX_MODULE}"
+core_exit 0
