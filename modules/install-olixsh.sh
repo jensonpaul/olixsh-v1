@@ -103,17 +103,17 @@ fi
 ###
 # Création de l'utilisateur MySQL pour la connexion automatique
 ##
-for I in 1 2 3; do
-echo -e "Création de l'utilisateur MySQL pour la connexion automatique"
-logger_debug "Execution de la requête GRANT ALL PRIVILEGES ON *.* TO '${IO_MYSQL_USER}'@'${IO_MYSQL_HOST}' IDENTIFIED BY '${IO_MYSQL_PASS}' WITH GRANT OPTION"
-echo -en "Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} "
-mysql -h ${IO_MYSQL_HOST} -P ${IO_MYSQL_PORT} --user=root -p \
-	--execute="GRANT ALL PRIVILEGES ON *.* TO '${IO_MYSQL_USER}'@'${IO_MYSQL_HOST}' IDENTIFIED BY '${IO_MYSQL_PASS}' WITH GRANT OPTION;" > ${OLIX_LOGGER_FILE_ERR} 2>&1
-RET=$?
-[ $RET -eq 0 ] && break
-done
-[ $RET -ne 0 ] && logger_error "Impossible d'executer le requête"
-
+if $(mysql_isRunning); then
+    for I in 1 2 3; do
+        echo -e "Création de l'utilisateur MySQL pour la connexion automatique"
+        logger_debug "Execution de la requête GRANT ALL PRIVILEGES ON *.* TO '${IO_MYSQL_USER}'@'${IO_MYSQL_HOST}' IDENTIFIED BY '${IO_MYSQL_PASS}' WITH GRANT OPTION"
+        echo -en "Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} "
+        mysql_createRoleOliX "${IO_MYSQL_HOST}" "${IO_MYSQL_PORT}" "root" "${IO_MYSQL_USER}" "${IO_MYSQL_USER}"
+        RET=$?
+        [ $RET -eq 0 ] && break
+    done
+    [ $RET -ne 0 ] && logger_error "Impossible d'executer le requête"
+fi
 
 ###
 # Effectue un lien vers l'interpréteur olixsh depuis /bin/olixsh pour l'installation

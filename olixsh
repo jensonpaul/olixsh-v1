@@ -44,6 +44,7 @@ source lib/core.inc.sh
 source lib/color.inc.sh
 source lib/stdinout.inc.sh
 source lib/logger.inc.sh
+source lib/mysql.inc.sh
 
 
 logger_checkLogger

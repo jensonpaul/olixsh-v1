@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"my",
+				"mysql"
+			],
+			[
+				"de",
+				"logger_debug"
+			],
+			[
 				"core",
 				"core_exit"
 			],
@@ -27,7 +35,7 @@
 			"file": "olixsh",
 			"settings":
 			{
-				"buffer_size": 6067,
+				"buffer_size": 2228,
 				"line_ending": "Unix"
 			}
 		},
@@ -35,7 +43,7 @@
 			"file": "lib/core.inc.sh",
 			"settings":
 			{
-				"buffer_size": 1549,
+				"buffer_size": 2126,
 				"line_ending": "Unix"
 			}
 		},
@@ -43,7 +51,7 @@
 			"file": "lib/logger.inc.sh",
 			"settings":
 			{
-				"buffer_size": 2807,
+				"buffer_size": 3259,
 				"line_ending": "Unix"
 			}
 		},
@@ -64,10 +72,29 @@
 			}
 		},
 		{
+			"contents": "###\n# Installation et configuration de olixsh dans le système\n# ==============================================================================\n# Mode intéractif\n# ------------------------------------------------------------------------------\n# @package olixsh\n# @author Olivier\n# @created 08/04/2014\n##\n\n\n###\n# Paramètres par défaut\n# - IO_PATH_DEST_CONFIG : Chemin de la configuration\n# - IO_FILENAME_CONFIG  : Nom du fichier de config server\n# - IO_MYSQL_HOST       : Host du serveur MySQL\n# - IO_MYSQL_PORT       : Port du serveur MySQL\n# - IO_MYSQL_USER       : Utilisateur du serveur MySQL\n# - IO_MYSQL_PASS       : Mot de passe de l'utilisateur du serveur MySQL\n##\nIO_PATH_DEST_CONFIG=\"/home/projects/config\"\nIO_FILENAME_CONFIG=\"${HOSTNAME}.conf\"\nIO_MYSQL_HOST=\"localhost\"\nIO_MYSQL_PORT=\"3306\"\nIO_MYSQL_USER=\"olix\"\nIO_MYSQL_PASS=\"olix52\"\n\n\n\n###\n# Il faut être root\n##\nlogger_debug \"Test si root\"\ncore_checkIfRoot\n[ $? -ne 0 ] && logger_error \"Seulement root peut executer l'installation d'oliXsh\"\n\n\necho -e \"${CVIOLET}Installation de oliXsh dans le système${CVOID}\"\necho -e \"${CBLANC}--------------------------------------${CVOID}\"\n\n\n###\n# Demande du dossier où sera stocké la configuration\n##\necho -en \"Emplacement de la configuration ${CJAUNE}[${IO_PATH_DEST_CONFIG}]${CVOID} ? \"\nread REPONSE\n[ ! -z ${REPONSE} ] && IO_PATH_DEST_CONFIG=${REPONSE}\n[ ! -d ${IO_PATH_DEST_CONFIG} ] && mkdir -p ${IO_PATH_DEST_CONFIG}\n\n\n###\n# Création du fichier de configuration serveur lié au serveur\n##\necho -en \"Nom du fichier de configuration serveur en fonction du serveur ${CJAUNE}[${IO_FILENAME_CONFIG}]${CVOID} ? \"\nread REPONSE\n[ ! -z ${REPONSE} ] && FILENAME_CONFIG=${REPONSE}\nif [ -f ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} ]; then\n    echo -e \"Le fichier ${CCYAN}${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}${CVOID} existe déjà !\"\n    echo -en \"Confirmer son écrasement ${CJAUNE}[o/N]${CVOID} ? \"\n    read REPONSE\nelse\n    REPONSE=\"o\"\nfi\n\n\n###\n# Création du fichier de configuration serveur\n##\nif [[ \"$REPONSE\" == \"o\" ]]; then\n	echo -e \"${CBLANC}Demande d'information sur l'utilisateur mySQL permettant la gestion du serveur mySQL : ${CVOID}\"\n	echo -en \"Host du serveur mySQL ${CJAUNE}[${IO_MYSQL_HOST}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_HOST=${REPONSE}\n	echo -en \"Port du serveur mySQL ${CJAUNE}[${IO_MYSQL_PORT}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_PORT=${REPONSE}\n	echo -en \"Nom de l'utilisateur du serveur mySQL ${CJAUNE}[${IO_MYSQL_USER}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_USER=${REPONSE}\n	echo -en \"Mot de passe associé ${CJAUNE}[${IO_MYSQL_PASS}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_PASS=${REPONSE}\n\n	logger_info \"Création du fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n	logger_debug \"Copie du fichier template/server.conf vers ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    cp -f template/server.conf ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n\n    logger_debug \"Remplacement de la valeur NAME=${HOSTNAME}\"\n    sed -i \"s/#NAME#/${HOSTNAME}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLHOST=${IO_MYSQL_HOST}\"\n    sed -i \"s/#MYSQLHOST#/${IO_MYSQL_HOST}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLPORT=${IO_MYSQL_PORT}\"\n    sed -i \"s/#MYSQLPORT#/${IO_MYSQL_PORT}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLUSER=${IO_MYSQL_USER}\"\n    sed -i \"s/#MYSQLUSER#/${IO_MYSQL_USER}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLPASS=${IO_MYSQL_PASS}\"\n    sed -i \"s/#MYSQLPASS#/${IO_MYSQL_PASS}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\nfi\n\n\n###\n# Création de l'utilisateur MySQL pour la connexion automatique\n##\nif $(mysql_isRunning); then\n    for I in 1 2 3; do\n        echo -e \"Création de l'utilisateur MySQL pour la connexion automatique\"\n        logger_debug \"Execution de la requête GRANT ALL PRIVILEGES ON *.* TO '${IO_MYSQL_USER}'@'${IO_MYSQL_HOST}' IDENTIFIED BY '${IO_MYSQL_PASS}' WITH GRANT OPTION\"\n        echo -en \"Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} \"\n        mysql_createRoleOliX \"${IO_MYSQL_HOST}\" \"${IO_MYSQL_PORT}\" \"root\" \"${IO_MYSQL_USER}\" \"${IO_MYSQL_USER}\"\n        RET=$?\n        [ $RET -eq 0 ] && break\n    done\n    [ $RET -ne 0 ] && logger_error \"Impossible d'executer le requête\"\nfi\n\n\n###\n# Effectue un lien vers l'interpréteur olixsh depuis /bin/olixsh pour l'installation\n##\nlogger_info \"Création du lien ${OLIX_SHELL_LINK}\"\nln -sf $(pwd)/${OLIX_SHELL_NAME} ${OLIX_SHELL_LINK} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Impossible de créer le lien ${OLIX_SHELL_LINK}\"\n\n\n###\n# Crée le fichier /etc/olix dans le système\n##\nlogger_info \"Création du fichier système de configuration ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Suppression du fichier ${OLIX_CONFIG_FILE}\"\nrm -f ${OLIX_CONFIG_FILE} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Erreur sur création du fichier ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Création du fichier ${OLIX_CONFIG_FILE}\"\ntouch ${OLIX_CONFIG_FILE} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Erreur sur création du fichier ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Ecriture de OLIX_CONFIG_PATH=${IO_PATH_DEST_CONFIG}\"\necho \"# Dossier de l'installation de la configuration\" >> ${OLIX_CONFIG_FILE}\necho \"OLIX_CONFIG_PATH=${IO_PATH_DEST_CONFIG}\" >> ${OLIX_CONFIG_FILE}\nlogger_debug \"Ecriture de OLIX_CONFIG_SERVER=${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\necho \"# Chemin du dossier du fichier de configuration serveur\" >> ${OLIX_CONFIG_FILE}\necho \"OLIX_CONFIG_SERVER=${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\" >> ${OLIX_CONFIG_FILE}\n\n\necho -e \"${CVERT}L'installation s'est terminé avec succès${CVOID}\"\necho -e \"Le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} a bien été créé et peut être complété\"\n",
 			"file": "modules/install-olixsh.sh",
+			"file_size": 6690,
+			"file_write_time": 1396988628000000,
 			"settings":
 			{
-				"buffer_size": 2272,
+				"buffer_size": 6645,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "lib/mysql.inc.sh",
+			"settings":
+			{
+				"buffer_size": 1643,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "template/server.conf",
+			"settings":
+			{
+				"buffer_size": 567,
 				"line_ending": "Unix"
 			}
 		}
@@ -117,6 +144,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\\\n",
+			"passe",
+			"mysql_isRunning",
+			"------------------------------------------------------------------------------",
 			"        \"",
 			"\n        ",
 			"        \n",
@@ -147,15 +178,15 @@
 					"file": "olixsh",
 					"settings":
 					{
-						"buffer_size": 6067,
+						"buffer_size": 2228,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3430,
-								3430
+								2114,
+								2114
 							]
 						],
 						"settings":
@@ -165,7 +196,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2066.0,
+						"translation.y": 1412.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -175,43 +206,15 @@
 					"file": "lib/core.inc.sh",
 					"settings":
 					{
-						"buffer_size": 1549,
+						"buffer_size": 2126,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								676,
-								676
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 357.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "lib/logger.inc.sh",
-					"settings":
-					{
-						"buffer_size": 2807,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								216,
-								216
+								0,
+								0
 							]
 						],
 						"settings":
@@ -222,6 +225,34 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "lib/logger.inc.sh",
+					"settings":
+					{
+						"buffer_size": 3259,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2290,
+								2290
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1275.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -285,15 +316,43 @@
 					"file": "modules/install-olixsh.sh",
 					"settings":
 					{
-						"buffer_size": 2272,
+						"buffer_size": 6645,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								127,
-								127
+								5159,
+								5159
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 357.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "lib/mysql.inc.sh",
+					"settings":
+					{
+						"buffer_size": 1643,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1087,
+								1087
 							]
 						],
 						"settings":
@@ -301,7 +360,33 @@
 							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 51.0,
+						"translation.y": 306.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "template/server.conf",
+					"settings":
+					{
+						"buffer_size": 567,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								112,
+								112
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ApacheConf/ApacheConf.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -350,6 +435,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"te",
+				"template/server.conf"
+			],
 			[
 				"in",
 				"modules/install-olixsh.sh"
