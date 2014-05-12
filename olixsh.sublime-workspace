@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"OL",
+				"OLIX_INSTALL_POSTFIX_APT"
+			],
+			[
+				"log",
+				"logger_debug"
+			],
+			[
 				"my",
 				"mysql"
 			],
@@ -35,7 +43,7 @@
 			"file": "olixsh",
 			"settings":
 			{
-				"buffer_size": 2228,
+				"buffer_size": 2654,
 				"line_ending": "Unix"
 			}
 		},
@@ -43,58 +51,47 @@
 			"file": "lib/core.inc.sh",
 			"settings":
 			{
-				"buffer_size": 2126,
+				"buffer_size": 2121,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "lib/logger.inc.sh",
+			"file": "/media/spiderman/config/install/14.04/spiderman.conf",
 			"settings":
 			{
-				"buffer_size": 3259,
+				"buffer_size": 2710,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "lib/constant.inc.sh",
+			"file": "/media/spiderman/config/spiderman.conf",
 			"settings":
 			{
-				"buffer_size": 943,
+				"buffer_size": 1101,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "lib/stdinout.inc.sh",
+			"file": "/media/spiderman/config/install/14.04/spiderman.ini",
 			"settings":
 			{
-				"buffer_size": 3014,
+				"buffer_size": 2365,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "###\n# Installation et configuration de olixsh dans le système\n# ==============================================================================\n# Mode intéractif\n# ------------------------------------------------------------------------------\n# @package olixsh\n# @author Olivier\n# @created 08/04/2014\n##\n\n\n###\n# Paramètres par défaut\n# - IO_PATH_DEST_CONFIG : Chemin de la configuration\n# - IO_FILENAME_CONFIG  : Nom du fichier de config server\n# - IO_MYSQL_HOST       : Host du serveur MySQL\n# - IO_MYSQL_PORT       : Port du serveur MySQL\n# - IO_MYSQL_USER       : Utilisateur du serveur MySQL\n# - IO_MYSQL_PASS       : Mot de passe de l'utilisateur du serveur MySQL\n##\nIO_PATH_DEST_CONFIG=\"/home/projects/config\"\nIO_FILENAME_CONFIG=\"${HOSTNAME}.conf\"\nIO_MYSQL_HOST=\"localhost\"\nIO_MYSQL_PORT=\"3306\"\nIO_MYSQL_USER=\"olix\"\nIO_MYSQL_PASS=\"olix52\"\n\n\n\n###\n# Il faut être root\n##\nlogger_debug \"Test si root\"\ncore_checkIfRoot\n[ $? -ne 0 ] && logger_error \"Seulement root peut executer l'installation d'oliXsh\"\n\n\necho -e \"${CVIOLET}Installation de oliXsh dans le système${CVOID}\"\necho -e \"${CBLANC}--------------------------------------${CVOID}\"\n\n\n###\n# Demande du dossier où sera stocké la configuration\n##\necho -en \"Emplacement de la configuration ${CJAUNE}[${IO_PATH_DEST_CONFIG}]${CVOID} ? \"\nread REPONSE\n[ ! -z ${REPONSE} ] && IO_PATH_DEST_CONFIG=${REPONSE}\n[ ! -d ${IO_PATH_DEST_CONFIG} ] && mkdir -p ${IO_PATH_DEST_CONFIG}\n\n\n###\n# Création du fichier de configuration serveur lié au serveur\n##\necho -en \"Nom du fichier de configuration serveur en fonction du serveur ${CJAUNE}[${IO_FILENAME_CONFIG}]${CVOID} ? \"\nread REPONSE\n[ ! -z ${REPONSE} ] && FILENAME_CONFIG=${REPONSE}\nif [ -f ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} ]; then\n    echo -e \"Le fichier ${CCYAN}${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}${CVOID} existe déjà !\"\n    echo -en \"Confirmer son écrasement ${CJAUNE}[o/N]${CVOID} ? \"\n    read REPONSE\nelse\n    REPONSE=\"o\"\nfi\n\n\n###\n# Création du fichier de configuration serveur\n##\nif [[ \"$REPONSE\" == \"o\" ]]; then\n	echo -e \"${CBLANC}Demande d'information sur l'utilisateur mySQL permettant la gestion du serveur mySQL : ${CVOID}\"\n	echo -en \"Host du serveur mySQL ${CJAUNE}[${IO_MYSQL_HOST}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_HOST=${REPONSE}\n	echo -en \"Port du serveur mySQL ${CJAUNE}[${IO_MYSQL_PORT}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_PORT=${REPONSE}\n	echo -en \"Nom de l'utilisateur du serveur mySQL ${CJAUNE}[${IO_MYSQL_USER}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_USER=${REPONSE}\n	echo -en \"Mot de passe associé ${CJAUNE}[${IO_MYSQL_PASS}]${CVOID} ? \"; read REPONSE\n	[ ! -z ${REPONSE} ] && IO_MYSQL_PASS=${REPONSE}\n\n	logger_info \"Création du fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n	logger_debug \"Copie du fichier template/server.conf vers ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    cp -f template/server.conf ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n\n    logger_debug \"Remplacement de la valeur NAME=${HOSTNAME}\"\n    sed -i \"s/#NAME#/${HOSTNAME}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLHOST=${IO_MYSQL_HOST}\"\n    sed -i \"s/#MYSQLHOST#/${IO_MYSQL_HOST}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLPORT=${IO_MYSQL_PORT}\"\n    sed -i \"s/#MYSQLPORT#/${IO_MYSQL_PORT}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLUSER=${IO_MYSQL_USER}\"\n    sed -i \"s/#MYSQLUSER#/${IO_MYSQL_USER}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\n    logger_debug \"Remplacement de la valeur MYSQLPASS=${IO_MYSQL_PASS}\"\n    sed -i \"s/#MYSQLPASS#/${IO_MYSQL_PASS}/g\" ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\n    [ $? -ne 0 ] && logger_error \"Impossible de créer le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\nfi\n\n\n###\n# Création de l'utilisateur MySQL pour la connexion automatique\n##\nif $(mysql_isRunning); then\n    for I in 1 2 3; do\n        echo -e \"Création de l'utilisateur MySQL pour la connexion automatique\"\n        logger_debug \"Execution de la requête GRANT ALL PRIVILEGES ON *.* TO '${IO_MYSQL_USER}'@'${IO_MYSQL_HOST}' IDENTIFIED BY '${IO_MYSQL_PASS}' WITH GRANT OPTION\"\n        echo -en \"Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} \"\n        mysql_createRoleOliX \"${IO_MYSQL_HOST}\" \"${IO_MYSQL_PORT}\" \"root\" \"${IO_MYSQL_USER}\" \"${IO_MYSQL_USER}\"\n        RET=$?\n        [ $RET -eq 0 ] && break\n    done\n    [ $RET -ne 0 ] && logger_error \"Impossible d'executer le requête\"\nfi\n\n\n###\n# Effectue un lien vers l'interpréteur olixsh depuis /bin/olixsh pour l'installation\n##\nlogger_info \"Création du lien ${OLIX_SHELL_LINK}\"\nln -sf $(pwd)/${OLIX_SHELL_NAME} ${OLIX_SHELL_LINK} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Impossible de créer le lien ${OLIX_SHELL_LINK}\"\n\n\n###\n# Crée le fichier /etc/olix dans le système\n##\nlogger_info \"Création du fichier système de configuration ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Suppression du fichier ${OLIX_CONFIG_FILE}\"\nrm -f ${OLIX_CONFIG_FILE} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Erreur sur création du fichier ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Création du fichier ${OLIX_CONFIG_FILE}\"\ntouch ${OLIX_CONFIG_FILE} > ${OLIX_LOGGER_FILE_ERR} 2>&1\n[ $? -ne 0 ] && logger_error \"Erreur sur création du fichier ${OLIX_CONFIG_FILE}\"\nlogger_debug \"Ecriture de OLIX_CONFIG_PATH=${IO_PATH_DEST_CONFIG}\"\necho \"# Dossier de l'installation de la configuration\" >> ${OLIX_CONFIG_FILE}\necho \"OLIX_CONFIG_PATH=${IO_PATH_DEST_CONFIG}\" >> ${OLIX_CONFIG_FILE}\nlogger_debug \"Ecriture de OLIX_CONFIG_SERVER=${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\"\necho \"# Chemin du dossier du fichier de configuration serveur\" >> ${OLIX_CONFIG_FILE}\necho \"OLIX_CONFIG_SERVER=${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}\" >> ${OLIX_CONFIG_FILE}\n\n\necho -e \"${CVERT}L'installation s'est terminé avec succès${CVOID}\"\necho -e \"Le fichier ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} a bien été créé et peut être complété\"\n",
-			"file": "modules/install-olixsh.sh",
-			"file_size": 6690,
-			"file_write_time": 1396988628000000,
+			"file": "/media/spiderman/config/install/12.04/portable.conf",
 			"settings":
 			{
-				"buffer_size": 6645,
+				"buffer_size": 2542,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "lib/mysql.inc.sh",
+			"file": "install/lib-14.04/samba.inc.sh",
 			"settings":
 			{
-				"buffer_size": 1643,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "template/server.conf",
-			"settings":
-			{
-				"buffer_size": 567,
+				"buffer_size": 1987,
 				"line_ending": "Unix"
 			}
 		}
@@ -102,9 +99,17 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 54.0,
 		"selected_items":
 		[
+			[
+				"sshb",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"ssb",
+				"Set Syntax: Shell Script (Bash)"
+			]
 		],
 		"width": 392.0
 	},
@@ -123,6 +128,48 @@
 	},
 	"file_history":
 	[
+		"/media/spiderman/olixsh2/install/lib-14.04/nfs.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/users.inc.sh",
+		"/media/spiderman/config/install/14.04/spiderman.ini",
+		"/media/spiderman/install2/lib-14.04/mysql.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/mysql.inc.sh",
+		"/media/spiderman/install2/lib-14.04/php.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/apache.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/php.inc.sh",
+		"/media/spiderman/olixsh2/modules/install-server.sh",
+		"/media/spiderman/olixsh2/lib/install.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/vmware.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/vmware.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/network.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/virtualbox.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/ntp.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/utf8.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/postfix.inc.sh",
+		"/media/spiderman/config/install/12.04/spiderman.conf",
+		"/media/spiderman/config/spiderman.conf",
+		"/media/spiderman/olixsh2/install/lib-14.04/apt-update.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/nfs.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/apache.inc.sh",
+		"/media/spiderman/config/install/12.04/ovhprod.ini",
+		"/media/spiderman/olixsh2/install/lib-12.04/ftp.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/samba.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/mysql.inc.sh",
+		"/media/spiderman/config/install/12.04/portable.conf",
+		"/media/spiderman/olixsh2/modules/install-package.sh",
+		"/media/spiderman/olixsh2/lib/logger.inc.sh",
+		"/media/spiderman/config/spiderman.aviation.conf",
+		"/media/spiderman/olixsh2/lib/constant.inc.sh",
+		"/media/spiderman/olixsh2/template/server.conf",
+		"/media/spiderman/olixsh2/lib/mysql.inc.sh",
+		"/media/spiderman/olixsh2/modules/install-olixsh.sh",
+		"/media/spiderman/olixsh2/lib/stdinout.inc.sh",
+		"/media/spiderman/config/install/12.04/ovhprod.properties",
+		"/media/spiderman/symfony/symfony1/web/config.php",
+		"/media/spiderman/symfony/symfony1/web/app_dev.php",
+		"/media/spiderman/symfony/symfony1/composer.json",
+		"/media/spiderman/symfony/symfony1/app/AppKernel.php",
+		"/media/spiderman/symfony/symfony1/app/config/routing_dev.yml",
+		"/media/spiderman/albator/albator-1.0/composer.json",
 		"/media/spiderman/olixsh/olixsh",
 		"/media/spiderman/olixsh/modules/file-sync.sh",
 		"/media/spiderman/otop3/src/Olix/AdminBundle/Controller/DemoController.php",
@@ -170,7 +217,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -178,15 +225,15 @@
 					"file": "olixsh",
 					"settings":
 					{
-						"buffer_size": 2228,
+						"buffer_size": 2654,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2114,
-								2114
+								0,
+								0
 							]
 						],
 						"settings":
@@ -206,7 +253,7 @@
 					"file": "lib/core.inc.sh",
 					"settings":
 					{
-						"buffer_size": 2126,
+						"buffer_size": 2121,
 						"regions":
 						{
 						},
@@ -231,154 +278,44 @@
 				},
 				{
 					"buffer": 2,
-					"file": "lib/logger.inc.sh",
+					"file": "/media/spiderman/config/install/14.04/spiderman.conf",
 					"settings":
 					{
-						"buffer_size": 3259,
+						"buffer_size": 2710,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2290,
-								2290
+								2167,
+								2167
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1275.0,
+						"translation.y": 765.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "lib/constant.inc.sh",
+					"file": "/media/spiderman/config/spiderman.conf",
 					"settings":
 					{
-						"buffer_size": 943,
+						"buffer_size": 1101,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								587,
-								587
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 51.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "lib/stdinout.inc.sh",
-					"settings":
-					{
-						"buffer_size": 3014,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2881,
-								2881
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 816.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "modules/install-olixsh.sh",
-					"settings":
-					{
-						"buffer_size": 6645,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5159,
-								5159
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 357.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "lib/mysql.inc.sh",
-					"settings":
-					{
-						"buffer_size": 1643,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1087,
-								1087
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 306.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "template/server.conf",
-					"settings":
-					{
-						"buffer_size": 567,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								112,
-								112
+								0,
+								0
 							]
 						],
 						"settings":
@@ -386,7 +323,85 @@
 							"syntax": "Packages/ApacheConf/ApacheConf.tmLanguage"
 						},
 						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/media/spiderman/config/install/14.04/spiderman.ini",
+					"settings":
+					{
+						"buffer_size": 2365,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								326,
+								326
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/sublime-text-2-ini-master/INI.tmLanguage"
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/media/spiderman/config/install/12.04/portable.conf",
+					"settings":
+					{
+						"buffer_size": 2542,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2542,
+								2542
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ApacheConf/ApacheConf.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1020.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "install/lib-14.04/samba.inc.sh",
+					"settings":
+					{
+						"buffer_size": 1987,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1675,
+								1675
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 714.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -436,12 +451,40 @@
 		"selected_items":
 		[
 			[
-				"te",
-				"template/server.conf"
+				"net",
+				"install/lib-14.04/network.inc.sh"
+			],
+			[
+				"po",
+				"install/lib-12.04/postfix.inc.sh"
+			],
+			[
+				"ft",
+				"install/lib-12.04/ftp.inc.sh"
+			],
+			[
+				"sam",
+				"install/lib-12.04/samba.inc.sh"
+			],
+			[
+				"my",
+				"install/lib-12.04/mysql.inc.sh"
+			],
+			[
+				"nfs",
+				"install/lib-12.04/nfs.inc.sh"
+			],
+			[
+				"apa",
+				"install/lib-12.04/apache.inc.sh"
 			],
 			[
 				"in",
-				"modules/install-olixsh.sh"
+				"lib/install.inc.sh"
+			],
+			[
+				"te",
+				"template/server.conf"
 			],
 			[
 				"st",

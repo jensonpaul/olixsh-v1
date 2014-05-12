@@ -44,6 +44,7 @@ source lib/core.inc.sh
 source lib/color.inc.sh
 source lib/stdinout.inc.sh
 source lib/logger.inc.sh
+source lib/filesystem.inc.sh
 source lib/mysql.inc.sh
 
 
@@ -101,10 +102,25 @@ if [[ "${OLIX_MODULE}" == "install:olixsh" ]]; then
     core_exit 0
 fi
 
-
+###
+# Congiguration principale
+##
 core_checkInstall
+logger_debug "Charge la configuration de ${OLIX_CONFIG_SERVER}"
+source ${OLIX_CONFIG_SERVER}
 
-# SI commande trouve
+
+
+
+if [[ ! -z ${OLIX_MODULE} ]]; then
+    OLIX_MODULE="modules/${OLIX_MODULE/:/-}.sh"
+    logger_debug "Script module : ${OLIX_MODULE}"
+    if [[ -r ${OLIX_MODULE} ]]; then
+        source ${OLIX_MODULE}
+        core_exit 0
+    fi
+    logger_debug "Le module ${OLIX_MODULE} est inexistant"
+fi
 
 
 stdinout_readChoiceModule

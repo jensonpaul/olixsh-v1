@@ -53,7 +53,7 @@ read REPONSE
 ##
 echo -en "Nom du fichier de configuration serveur en fonction du serveur ${CJAUNE}[${IO_FILENAME_CONFIG}]${CVOID} ? "
 read REPONSE
-[ ! -z ${REPONSE} ] && FILENAME_CONFIG=${REPONSE}
+[ ! -z ${REPONSE} ] && IO_FILENAME_CONFIG=${REPONSE}
 if [ -f ${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG} ]; then
     echo -e "Le fichier ${CCYAN}${IO_PATH_DEST_CONFIG}/${IO_FILENAME_CONFIG}${CVOID} existe déjà !"
     echo -en "Confirmer son écrasement ${CJAUNE}[o/N]${CVOID} ? "

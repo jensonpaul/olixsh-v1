@@ -31,11 +31,11 @@ function core_exit()
 ###
 # Vérifie que ce soit root qui puisse exécuter le script
 ##
-function core_checkIfRoot() {
+function core_checkIfRoot()
+{
     [[ $(id -u) != 0 ]] && return 1
     return 0
 }
-
 
 
 ###
@@ -62,7 +62,7 @@ function core_checkInstall()
         logger_warning "${OLIX_CONFIG_PATH} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"
     fi
-    
+
     logger_debug "Vérification de la présence de fichier de configuration server ${OLIX_CONFIG_SERVER}"
     if [[ ! -r "${OLIX_CONFIG_SERVER}" ]]; then
         logger_warning "${OLIX_CONFIG_SERVER} absent"

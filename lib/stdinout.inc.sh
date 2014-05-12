@@ -51,6 +51,9 @@ function stdinout_printListModule() {
     
     #echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:source${CVOID}   : Installer les sources olixsh sur un serveur distant"
     echo -e "${CJAUNE} io${CVOID} - ${Cjaune}install:olixsh${CVOID}    : Installer oliXsh sur le serveur"
+    echo -e "${CJAUNE} ic${CVOID} - ${Cjaune}install:config${CVOID}    : Installer les fichiers de configuration sur le serveur"
+    echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:server${CVOID}    : Configuration du systeme Ubuntu"
+    echo -e "${CJAUNE} ip${CVOID} - ${Cjaune}install:package${CVOID}   : Installation d'un package"
     #echo -e "${CJAUNE} im${CVOID} - ${Cjaune}install:mysql${CVOID}    : Configurer le serveur MySQL en connexion automatique"
     #echo -e "${CJAUNE} it${CVOID} - ${Cjaune}install:test${CVOID}     : Tester olixsh et sa configuration"
     #echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
@@ -76,6 +79,9 @@ function stdinout_readChoiceModule()
         read OLIX_MODULE
         case ${OLIX_MODULE} in
             io|install:olixsh)   OLIX_MODULE="install:olixsh"; break;;
+            ic|install:config)   OLIX_MODULE="install:config"; break;;
+            is|install:server)   OLIX_MODULE="install:server"; break;;
+            ip|install:package)  OLIX_MODULE="install:package"; break;;
             q|quit)              OLIX_MODULE="quit"; break;;
             *)                   [ "${OLIX_MODULE}" == "" ] && OLIX_MODULE="quit" && break;;
         esac
