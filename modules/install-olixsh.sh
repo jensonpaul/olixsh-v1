@@ -19,7 +19,7 @@
 # - IO_MYSQL_PASS       : Mot de passe de l'utilisateur du serveur MySQL
 ##
 IO_PATH_DEST_CONFIG="/home/projects/config"
-IO_FILENAME_CONFIG="${HOSTNAME}.conf"
+IO_FILENAME_CONFIG=$(hostname -f).conf
 IO_MYSQL_HOST="localhost"
 IO_MYSQL_PORT="3306"
 IO_MYSQL_USER="olix"
