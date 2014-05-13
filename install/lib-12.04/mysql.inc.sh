@@ -93,10 +93,9 @@ service mysql restart
 # Configuration des droits
 ##
 logger_debug "Affectation des droits pour ${OLIX_CONF_SERVER_MYSQL_USER}"
-echo -e "Mot de passe pour affectation des droits à ${CBLANC}${OLIX_CONF_SERVER_MYSQL_USER}${CVOID}"
-echo "GRANT ALL PRIVILEGES ON *.* TO '${OLIX_CONF_SERVER_MYSQL_USER}'@'localhost' IDENTIFIED BY '${OLIX_CONF_SERVER_MYSQL_PASS}' WITH GRANT OPTION;" \
-    | mysql -p > ${OLIX_LOGGER_FILE_ERR} 2>&1
-[[ $? -ne 0 ]] && logger_error
+mysql_createRoleOliX "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" "root" \
+                     "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}"
+[[ $? -ne 0 ]] && logger_error "Impossible d'executer le requête"
 
 logger_debug "Execution du script ${OLIX_INSTALL_MYSQL_SCRIPT}"
 [[ ! -f ${__PATH_CONFIG}/${OLIX_INSTALL_MYSQL_SCRIPT} ]] && logger_error "Le fichier ${__PATH_CONFIG}/${OLIX_INSTALL_MYSQL_SCRIPT} n'existe pas"

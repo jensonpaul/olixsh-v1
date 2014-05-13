@@ -39,6 +39,7 @@ function mysql_isRunning()
 function mysql_createRoleOliX()
 {
 	logger_debug "MySQL -- GRANT ALL PRIVILEGES ON *.* TO '$4'@'localhost' IDENTIFIED BY '$5' WITH GRANT OPTION"
+	echo -en "Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} "
 	mysql --host=$1 --port=$2 --user=$3 -p \
 		--execute="GRANT ALL PRIVILEGES ON *.* TO '$4'@'localhost' IDENTIFIED BY '$5' WITH GRANT OPTION;" \
 		> ${OLIX_LOGGER_FILE_ERR} 2>&1
