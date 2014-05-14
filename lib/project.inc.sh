@@ -15,6 +15,7 @@ OLIX_PROJECT_CODE=""
 
 ###
 # Affiche le choix du projet
+# @return OLIX_PROJECT_CODE
 ##
 function project_printChoiceProject()
 {
@@ -75,6 +76,7 @@ function project_loadConfiguration()
 # Chercher un fichier de conf du projet en fonction de la version d'ubuntu et de l'environnement
 # @param $1 : Préfixe de l'emplacement du fichier de conf
 # @param $2 : Suffixe ou extension
+# @return le fichier de conf trouvé
 ##
 function project_getFileConf()
 {
@@ -88,4 +90,23 @@ function project_getFileConf()
     FILECFG="$1$2"
     if [[ -f ${FILECFG} ]]; then echo "${FILECFG}"; return; fi
     echo ""
+}
+
+
+###
+# Vérifie les arguments dans la ligne de commande
+# @return OLIX_PROJECT_CODE
+##
+function project_checkArguments()
+{
+    if [[ ! -z "${OLIX_ARGS}" ]]; then
+        OLIX_ARGS=$(echo "${OLIX_ARGS}" | sed -e 's/^ *//' -e 's/ *$//' | awk '{print $1}')
+        if project_isExist ${OLIX_ARGS}; then
+            OLIX_PROJECT_CODE=${OLIX_ARGS}
+        else
+            logger_error "Le projet ${OLIX_ARGS} n'existe pas"
+        fi
+    else
+        project_printChoiceProject
+    fi
 }

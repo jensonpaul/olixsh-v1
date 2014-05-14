@@ -64,7 +64,8 @@ function stdinout_printListModule()
     echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:server${CVOID}    : Configuration du systeme Ubuntu"
     echo -e "${CJAUNE} ip${CVOID} - ${Cjaune}install:package${CVOID}   : Installation d'un package"
     echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
-    echo -e "${CJAUNE} pi${CVOID}  - ${Cjaune}project:install${CVOID}  : Installation d'un projet"
+    echo -e "${CJAUNE} pi${CVOID} - ${Cjaune}project:install${CVOID}  : Installation d'un projet"
+    echo -e "${CJAUNE} ps${CVOID} - ${Cjaune}project:syncfile${CVOID} : Synchronisation des fichiers d'un projet"
 }
 
 

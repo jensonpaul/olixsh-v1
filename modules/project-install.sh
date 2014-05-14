@@ -1,7 +1,10 @@
 ###
 # Installation d'un projet
 # ==============================================================================
-# - xxxxx
+# - Installation des paquets additionnels
+# - Installation des fichiers
+# - Installation de la base
+# - Installation des fichiers systèmes
 # ------------------------------------------------------------------------------
 # @package olixsh
 # @author Olivier
@@ -22,21 +25,10 @@ core_checkIfRoot
 
 
 
-if [[ ! -z "${OLIX_ARGS}" ]]; then
-	OLIX_ARGS=$(echo "${OLIX_ARGS}" | sed -e 's/^ *//' -e 's/ *$//' | awk '{print $1}')
-	if project_isExist ${OLIX_ARGS}; then
-		OLIX_PROJECT_CODE=${OLIX_ARGS}
-	else
-		logger_error "Le projet ${OLIX_ARGS} n'existe pas"
-	fi
-else
-	project_printChoiceProject
-fi
-
-
 ###
 # Chargement du fichier de conf
 ##
+project_checkArguments
 project_loadConfiguration ${OLIX_PROJECT_CODE}
 
 
