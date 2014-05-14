@@ -48,50 +48,18 @@
 			}
 		},
 		{
-			"file": "lib/core.inc.sh",
+			"file": "modules/install-server.sh",
 			"settings":
 			{
-				"buffer_size": 2121,
+				"buffer_size": 2078,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/media/spiderman/config/install/14.04/spiderman.conf",
+			"file": "install/lib-14.04/apache.inc.sh",
 			"settings":
 			{
-				"buffer_size": 2710,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/media/spiderman/config/spiderman.conf",
-			"settings":
-			{
-				"buffer_size": 1101,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/media/spiderman/config/install/14.04/spiderman.ini",
-			"settings":
-			{
-				"buffer_size": 2365,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/media/spiderman/config/install/12.04/portable.conf",
-			"settings":
-			{
-				"buffer_size": 2542,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "install/lib-14.04/samba.inc.sh",
-			"settings":
-			{
-				"buffer_size": 1987,
+				"buffer_size": 3084,
 				"line_ending": "Unix"
 			}
 		}
@@ -99,13 +67,9 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 54.0,
+		"height": 327.0,
 		"selected_items":
 		[
-			[
-				"sshb",
-				"Set Syntax: Shell Script (Bash)"
-			],
 			[
 				"ssb",
 				"Set Syntax: Shell Script (Bash)"
@@ -128,40 +92,36 @@
 	},
 	"file_history":
 	[
-		"/media/spiderman/olixsh2/install/lib-14.04/nfs.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/users.inc.sh",
-		"/media/spiderman/config/install/14.04/spiderman.ini",
-		"/media/spiderman/install2/lib-14.04/mysql.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/mysql.inc.sh",
-		"/media/spiderman/install2/lib-14.04/php.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/apache.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/php.inc.sh",
-		"/media/spiderman/olixsh2/modules/install-server.sh",
 		"/media/spiderman/olixsh2/lib/install.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/vmware.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-12.04/vmware.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-14.04/network.inc.sh",
+		"/media/spiderman/olixsh2/modules/install-olixsh.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/mysql.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/mysql.inc.sh",
+		"/media/spiderman/olixsh2/lib/mysql.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/apache.inc.sh",
+		"/media/spiderman/config/install/14.04/apache/conf/olix-maintenance.conf",
+		"/media/spiderman/config/install/14.04/apache/conf/olix-spiderman.conf",
+		"/media/spiderman/olixsh2/install/lib-14.04/users.inc.sh",
 		"/media/spiderman/olixsh2/install/lib-14.04/virtualbox.inc.sh",
 		"/media/spiderman/olixsh2/install/lib-14.04/ntp.inc.sh",
 		"/media/spiderman/olixsh2/install/lib-14.04/utf8.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-12.04/postfix.inc.sh",
-		"/media/spiderman/config/install/12.04/spiderman.conf",
-		"/media/spiderman/config/spiderman.conf",
 		"/media/spiderman/olixsh2/install/lib-14.04/apt-update.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-14.04/network.inc.sh",
 		"/media/spiderman/olixsh2/install/lib-12.04/nfs.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-12.04/apache.inc.sh",
+		"/media/spiderman/olixsh2/lib/core.inc.sh",
+		"/media/spiderman/olixsh2/install/lib-12.04/logwatch.inc.sh",
+		"/media/spiderman/olixsh2/modules/install-package.sh",
+		"/media/spiderman/config/install/12.04/portable.conf",
+		"/media/spiderman/config/install/12.04/spiderman.conf",
+		"/media/spiderman/olixsh2/install/lib-12.04/postfix.inc.sh",
+		"/media/spiderman/config/spiderman.conf",
+		"/media/spiderman/config/spiderman.aviation.conf",
+		"/media/spiderman/olixsh2/olixsh.sublime-project",
 		"/media/spiderman/config/install/12.04/ovhprod.ini",
 		"/media/spiderman/olixsh2/install/lib-12.04/ftp.inc.sh",
 		"/media/spiderman/olixsh2/install/lib-12.04/samba.inc.sh",
-		"/media/spiderman/olixsh2/install/lib-12.04/mysql.inc.sh",
-		"/media/spiderman/config/install/12.04/portable.conf",
-		"/media/spiderman/olixsh2/modules/install-package.sh",
 		"/media/spiderman/olixsh2/lib/logger.inc.sh",
-		"/media/spiderman/config/spiderman.aviation.conf",
 		"/media/spiderman/olixsh2/lib/constant.inc.sh",
 		"/media/spiderman/olixsh2/template/server.conf",
-		"/media/spiderman/olixsh2/lib/mysql.inc.sh",
-		"/media/spiderman/olixsh2/modules/install-olixsh.sh",
 		"/media/spiderman/olixsh2/lib/stdinout.inc.sh",
 		"/media/spiderman/config/install/12.04/ovhprod.properties",
 		"/media/spiderman/symfony/symfony1/web/config.php",
@@ -217,7 +177,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -250,46 +210,44 @@
 				},
 				{
 					"buffer": 1,
-					"file": "lib/core.inc.sh",
+					"file": "modules/install-server.sh",
 					"settings":
 					{
-						"buffer_size": 2121,
+						"buffer_size": 2078,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1515,
+								1515
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 975.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "/media/spiderman/config/install/14.04/spiderman.conf",
+					"file": "install/lib-14.04/apache.inc.sh",
 					"settings":
 					{
-						"buffer_size": 2710,
+						"buffer_size": 3084,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2167,
-								2167
+								1937,
+								1937
 							]
 						],
 						"settings":
@@ -297,111 +255,7 @@
 							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 765.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "/media/spiderman/config/spiderman.conf",
-					"settings":
-					{
-						"buffer_size": 1101,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ApacheConf/ApacheConf.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 102.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/media/spiderman/config/install/14.04/spiderman.ini",
-					"settings":
-					{
-						"buffer_size": 2365,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								326,
-								326
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/sublime-text-2-ini-master/INI.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/media/spiderman/config/install/12.04/portable.conf",
-					"settings":
-					{
-						"buffer_size": 2542,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2542,
-								2542
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ApacheConf/ApacheConf.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1020.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "install/lib-14.04/samba.inc.sh",
-					"settings":
-					{
-						"buffer_size": 1987,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1675,
-								1675
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 714.0,
+						"translation.y": 816.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -451,8 +305,28 @@
 		"selected_items":
 		[
 			[
-				"net",
-				"install/lib-14.04/network.inc.sh"
+				"my",
+				"lib/mysql.inc.sh"
+			],
+			[
+				"in",
+				"lib/install.inc.sh"
+			],
+			[
+				"log",
+				"install/lib-12.04/logwatch.inc.sh"
+			],
+			[
+				"apa",
+				"install/lib-12.04/apache.inc.sh"
+			],
+			[
+				"olix",
+				"modules/install-olixsh.sh"
+			],
+			[
+				"cor",
+				"lib/core.inc.sh"
 			],
 			[
 				"po",
@@ -467,20 +341,8 @@
 				"install/lib-12.04/samba.inc.sh"
 			],
 			[
-				"my",
-				"install/lib-12.04/mysql.inc.sh"
-			],
-			[
 				"nfs",
 				"install/lib-12.04/nfs.inc.sh"
-			],
-			[
-				"apa",
-				"install/lib-12.04/apache.inc.sh"
-			],
-			[
-				"in",
-				"lib/install.inc.sh"
 			],
 			[
 				"te",
@@ -497,10 +359,6 @@
 			[
 				"con",
 				"lib/constant.inc.sh"
-			],
-			[
-				"log",
-				"lib/logger.inc.sh"
 			],
 			[
 				"oli",

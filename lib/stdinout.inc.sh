@@ -8,6 +8,16 @@
 
 
 ###
+# Paramètres
+##
+OLIX_STDINOUT_SERVER_HOST=""
+OLIX_STDINOUT_SERVER_PORT=""
+OLIX_STDINOUT_SERVER_USER=""
+OLIX_STDINOUT_SERVER_PATH=""
+OLIX_STDINOUT_SERVER_BASE=""
+
+
+###
 # Affiche l'usage de la commande
 ##
 function stdinout_printUsage()
@@ -47,17 +57,15 @@ function stdinout_printVersion()
 ###
 # Affiche le menu des fonctionnalités
 ##
-function stdinout_printListModule() {
-    
-    #echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:source${CVOID}   : Installer les sources olixsh sur un serveur distant"
+function stdinout_printListModule()
+{
     echo -e "${CJAUNE} io${CVOID} - ${Cjaune}install:olixsh${CVOID}    : Installer oliXsh sur le serveur"
     echo -e "${CJAUNE} ic${CVOID} - ${Cjaune}install:config${CVOID}    : Installer les fichiers de configuration sur le serveur"
     echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:server${CVOID}    : Configuration du systeme Ubuntu"
     echo -e "${CJAUNE} ip${CVOID} - ${Cjaune}install:package${CVOID}   : Installation d'un package"
-    #echo -e "${CJAUNE} im${CVOID} - ${Cjaune}install:mysql${CVOID}    : Configurer le serveur MySQL en connexion automatique"
-    #echo -e "${CJAUNE} it${CVOID} - ${Cjaune}install:test${CVOID}     : Tester olixsh et sa configuration"
-    #echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
-    #echo -e "${CJAUNE} -${CVOID}  - ${Cjaune}maint${CVOID}            : Activation du serveur Apache en mode maintenance"
+    echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
+    echo -e "${CJAUNE} pi${CVOID} - ${Cjaune}project:install${CVOID}  : Installation d'un projet"
+    echo -e "${CJAUNE} ps${CVOID} - ${Cjaune}project:syncfile${CVOID} : Synchronisation des fichiers d'un projet"
 }
 
 
@@ -86,4 +94,81 @@ function stdinout_readChoiceModule()
             *)                   [ "${OLIX_MODULE}" == "" ] && OLIX_MODULE="quit" && break;;
         esac
     done
+}
+
+
+###
+# Demande des infos d'un connexion distante en SSH
+# @param @return OLIX_STDINOUT_SERVER_HOST : Host du serveur
+# @param @return OLIX_STDINOUT_SERVER_PORT : Port du serveur
+# @param @return OLIX_STDINOUT_SERVER_USER : User du serveur
+# @param @return OLIX_STDINOUT_SERVER_PATH : Chemin du serveur
+# @param @return OLIX_STDINOUT_SERVER_BASE : Base du serveur
+##
+function stdinout_readConnexionServer()
+{
+    local REPONSE
+    OLIX_STDINOUT_SERVER_HOST=$3
+    OLIX_STDINOUT_SERVER_PORT=$4
+    OLIX_STDINOUT_SERVER_USER=$5
+    OLIX_STDINOUT_SERVER_PATH=$6
+    OLIX_STDINOUT_SERVER_BASE=$6
+    
+    # Verifie si un cache existe pour éviter de resaisir
+    local FCACHE="/tmp/cache.$USER.$2.$1"
+    [[ -r ${FCACHE} ]] && logger_debug "Lecture du cache ${FCACHE}" && source ${FCACHE}
+    
+    echo > ${FCACHE}
+    echo -en "Host du serveur ${CJAUNE}[${OLIX_STDINOUT_SERVER_HOST}]${CVOID} ? "
+    read REPONSE
+    [ ! -z ${REPONSE} ] && OLIX_STDINOUT_SERVER_HOST=${REPONSE}
+    echo "OLIX_STDINOUT_SERVER_HOST=${OLIX_STDINOUT_SERVER_HOST}" >> ${FCACHE}
+    echo -en "Port du serveur ${CJAUNE}[${OLIX_STDINOUT_SERVER_PORT}]${CVOID} ? "
+    read REPONSE
+    [ ! -z ${REPONSE} ] && OLIX_STDINOUT_SERVER_PORT=${REPONSE}
+    echo "OLIX_STDINOUT_SERVER_PORT=${OLIX_STDINOUT_SERVER_PORT}" >> ${FCACHE}
+    echo -en "Utilisateur de connexion ${CJAUNE}[${OLIX_STDINOUT_SERVER_USER}]${CVOID} ? "
+    read REPONSE
+    [ ! -z ${REPONSE} ] && OLIX_STDINOUT_SERVER_USER=${REPONSE}
+    echo "OLIX_STDINOUT_SERVER_USER=${OLIX_STDINOUT_SERVER_USER}" >> ${FCACHE}
+    if [[ "$1" == "ssh" ]]; then
+        echo -en "Emplacement du chemin source ${CJAUNE}[${OLIX_STDINOUT_SERVER_PATH}]${CVOID} ? "
+        read REPONSE
+        [ ! -z ${REPONSE} ] && OLIX_STDINOUT_SERVER_PATH=${REPONSE}
+        echo "OLIX_STDINOUT_SERVER_PATH=${OLIX_STDINOUT_SERVER_PATH}" >> ${FCACHE}
+    fi
+    if [[ "$1" == "mysql" ]]; then
+        echo -en "Nom de la base source ${CJAUNE}[${OLIX_STDINOUT_SERVER_BASE}]${CVOID} ? "
+        read REPONSE
+        [ ! -z ${REPONSE} ] && OLIX_STDINOUT_SERVER_BASE=${REPONSE}
+        echo "OLIX_STDINOUT_SERVER_BASE=${OLIX_STDINOUT_SERVER_BASE}" >> ${FCACHE}
+    fi
+}
+
+
+###
+# Demande d'infos d'une connexion distance à un serveur SSH
+# @param $1 : Code pour differencier la connexion dans le cache
+##
+function stdinout_readConnexionServerSSH()
+{
+    local CODE=$1
+    [[ -z ${CODE} ]] && CODE="default"
+    logger_debug "Demande des infos de connexion distante SSH"
+    stdinout_readConnexionServer "ssh" "${CODE}" \
+        "${OLIX_STDINOUT_SERVER_HOST}" "22" "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}"
+}
+
+
+###
+# Demande d'infos d'une connexion distance à un serveur MySQL
+# @param $1 : Code pour differencier la connexion dans le cache
+##
+function stdinout_readConnexionServerMySQL()
+{
+    local CODE=$1
+    [[ -z ${CODE} ]] && CODE="default"
+    logger_debug "Demande des infos de connexion distante MySQL"
+    stdinout_readConnexionServer "mysql" "${CODE}" \
+        "${OLIX_STDINOUT_SERVER_HOST}" "3306" "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}"
 }
