@@ -36,7 +36,7 @@ function filesystem_synchronize()
     logger_debug "Création du fichier exclude ${FILE_EXCLUDE}"
 	filesystem_createFileExclude "${FILE_EXCLUDE}" "$4"
 	logger_debug "Synchronisation port $1 de $2 vers $3"
-    rsync --rsh="ssh -p $1" --archive --compress --progress --delete --exclude-from=${FILE_EXCLUDE} $2/ $3/
+    rsync --rsh="ssh -p $1" --archive --compress --progress --delete --exclude-from=${FILE_EXCLUDE} $2/ $3/ 2> ${OLIX_LOGGER_FILE_ERR}
     RET=$?
 	rm -f ${FILE_EXCLUDE}
 	[[ $RET -ne 0 ]] && return 1
