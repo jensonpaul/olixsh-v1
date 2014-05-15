@@ -84,14 +84,14 @@ for I in ${OLIX_CONF_PROJECT_MYSQL_BASE}; do
 	OLIX_STDINOUT_SERVER_BASE="${I}"
 	stdinout_readConnexionServerMySQL "${OLIX_PROJECT_CODE}.${I}"
 
-    mysql_dropDatabase "${I}"
+    mysql_dropDatabaseLocal "${I}"
     [[ $? -ne 0 ]] && logger_error "Impossible de supprimer la base $I"
 
-    mysql_createDatabase "${I}"
+    mysql_createDatabaseLocal "${I}"
     [[ $? -ne 0 ]] && logger_error "Impossible de créer la base $I"
 
-    mysql_createRole "${OLIX_CONF_PROJECT_MYSQL_USER}" "${OLIX_CONF_PROJECT_MYSQL_PASS}" "${I}"
-    [[ $? -ne 0 ]] && logger_error "Impossible de créer le role de {OLIX_CONF_PROJECT_MYSQL_USER} sur $I"
+    mysql_createRoleLocal "${OLIX_CONF_PROJECT_MYSQL_USER}" "${OLIX_CONF_PROJECT_MYSQL_PASS}" "${I}"
+    [[ $? -ne 0 ]] && logger_error "Impossible de créer le role de ${OLIX_CONF_PROJECT_MYSQL_USER} sur $I"
     echo -e "Création de la base : ${CVERT}OK ...${CVOID}"
 
     [[ "|${OLIX_CONF_PROJECT_INSTALL_BASE_EXCLUDE// /|}|" =~ "|${I}|" ]] && continue
