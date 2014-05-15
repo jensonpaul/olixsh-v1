@@ -99,6 +99,8 @@ function stdinout_readChoiceModule()
 
 ###
 # Demande des infos d'un connexion distante en SSH
+# @param $1 : Type de connexion mysql ou ssh
+# @param $2 : Code pour le cache
 # @param @return OLIX_STDINOUT_SERVER_HOST : Host du serveur
 # @param @return OLIX_STDINOUT_SERVER_PORT : Port du serveur
 # @param @return OLIX_STDINOUT_SERVER_USER : User du serveur
