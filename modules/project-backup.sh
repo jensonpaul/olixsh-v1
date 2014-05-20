@@ -62,8 +62,8 @@ report_initialize 	"${OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE}" \
 					"${OLIX_CONF_PROJECT_BACKUP_REPORT_REPO}/rapport-backup-${OLIX_PROJECT_CODE}-${OLIX_SYSTEM_DATE}" \
 					"${OLIX_CONF_PROJECT_BACKUP_REPORT_MAIL}"
 
-stdout_head1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "${OLIX_SYSTEM_DATE}" "${OLIX_SYSTEM_TIME}"
-report_head1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "${OLIX_SYSTEM_DATE}" "${OLIX_SYSTEM_TIME}"
+stdout_printHead1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "${OLIX_SYSTEM_DATE}" "${OLIX_SYSTEM_TIME}"
+report_printHead1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "${OLIX_SYSTEM_DATE}" "${OLIX_SYSTEM_TIME}"
 
 
 
@@ -81,8 +81,8 @@ _PB_LIST_BASE="${_PB_LIST_BASE} ${OLIX_CONF_PROJECT_BACKUP_BASE_INCLUDE}"
 # Traitement
 for I in ${_PB_LIST_BASE}; do
 
-	stdout_head2 "Dump de la base %s" "${I}"
-	report_head2 "Dump de la base %s" "${I}"
+	stdout_printHead2 "Dump de la base %s" "${I}"
+	report_printHead2 "Dump de la base %s" "${I}"
 
     backup_baseMySQL ${I}
 
@@ -92,8 +92,8 @@ done
 ###
 # Sauvegarde du dossier du projet
 ##
-stdout_head2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
-report_head2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
+stdout_printHead2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
+report_printHead2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
 
 backup_directory "${OLIX_CONF_PROJECT_PATH}" "${OLIX_PROJECT_CODE}" "${OLIX_CONF_PROJECT_BACKUP_FILE_EXCLUDE}"
 
@@ -103,8 +103,8 @@ backup_directory "${OLIX_CONF_PROJECT_PATH}" "${OLIX_PROJECT_CODE}" "${OLIX_CONF
 ##
 for I in ${OLIX_CONF_PROJECT_BACKUP_PATH_EXTRA}; do
 
-	stdout_head2 "Sauvegarde du dossier %s" "${I}"
-	report_head2 "Sauvegarde du dossier projet %s" "${I}"
+	stdout_printHead2 "Sauvegarde du dossier %s" "${I}"
+	report_printHead2 "Sauvegarde du dossier projet %s" "${I}"
 
 	backup_directory "${I}" "${I//\//_}"
 
@@ -114,4 +114,11 @@ done
 ###
 # Fin
 ##
+stdout_print
+stdout_printLine
+stdout_print "Sauvegarde terminée en $(core_getTimeExec) secondes"
+report_print
+report_printLine
+report_print "Sauvegarde terminée en $(core_getTimeExec) secondes"
+
 report_terminate "Rapport de backup du projet ${OLIX_PROJECT_CODE}"

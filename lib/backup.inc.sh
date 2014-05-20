@@ -15,9 +15,12 @@
 function backup_moveArchive()
 {
 	logger_debug "backup_moveArchive ($1, $2)"
+    local START=${SECONDS}
+
     mv $1 $2/ > ${OLIX_LOGGER_FILE_ERR} 2>&1
-    stdout_messageReturn $? "Déplacement vers le dossier de backup"
-    report_messageReturn $? "Déplacement vers le dossier de backup"
+
+    stdout_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
+    report_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
     [[ $? -ne 0 ]] && logger_error
     return $?
 }
@@ -31,9 +34,9 @@ function backup_moveArchive()
 ##
 function backup_compress()
 {
-    local FILE
-    local RET
     logger_debug "backup_compress ($1, $2)"
+    local FILE RET
+    local START=${SECONDS}
 
     case $1 in
         BZ|bz|BZ2|bz2)  FILE=$(filesystem_compressBZ $2)
@@ -47,8 +50,8 @@ function backup_compress()
                         return 0;;
     esac
     
-    stdout_messageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})"
-    report_messageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})"
+    stdout_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
+    report_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
 
     [[ $? -ne 0 ]] && logger_error
     OLIX_FUNCTION_RESULT=${FILE}
@@ -68,15 +71,15 @@ function backup_purge()
 
     filesystem_purgeStandard "$1" "$2" "$3" "${LIST_FILE_PURGED}"
 
-    stdout_messageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
-    report_messageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
+    stdout_printMessageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
+    report_printMessageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
     stdout_printFile $? "${LIST_FILE_PURGED}"
     report_printFile $? "${LIST_FILE_PURGED}"
     [[ $? -ne 0 ]] && logger_error
 
-    stdout_messageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
-    report_messageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
-    find $1 -name "$2" -exec basename \{\} \; # > ${LIST_FILE_PURGED}
+    stdout_printMessageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
+    report_printMessageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
+    find $1 -name "$2" -exec basename \{\} \; > ${LIST_FILE_PURGED}
     stdout_printFile $? "${LIST_FILE_PURGED}"
     report_printFile $? "${LIST_FILE_PURGED}"
 
@@ -95,9 +98,10 @@ function backup_baseMySQL()
 
 	logger_debug "backup_baseMySQL ($1) -> ${DUMP}"
 
+    local START=${SECONDS}
     mysql_dumpDatabaseLocal "${I}" "${DUMP}"
-    stdout_messageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})"
-    report_messageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})"
+    stdout_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
+    report_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
     [[ $? -ne 0 ]] && logger_error
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${DUMP}"
@@ -124,9 +128,10 @@ function backup_directory()
 
     logger_debug "backup_directory ($1, $2, $3) -> ${FILEBCK}"
 
+    local START=${SECONDS}
     filesystem_makeArchive "$1" "${FILEBCK}" "$3"
-    stdout_messageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})"
-    report_messageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})"
+    stdout_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
+    report_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
     [[ $? -ne 0 ]] && logger_error
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${FILEBCK}"

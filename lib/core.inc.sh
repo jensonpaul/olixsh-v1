@@ -8,6 +8,9 @@
 ##
 
 
+# Pointeur de temps de départ du script
+OLIX_CORE_EXEC_START=${SECONDS}
+
 
 ###
 # Sortie du programme shell avec nettoyage
@@ -106,4 +109,10 @@ function core_sendMail()
         mailx -s "${SUBJECT}" $2 < $3
     fi
     return $?
+}
+
+
+function core_getTimeExec()
+{
+    echo -n $((SECONDS-OLIX_CORE_EXEC_START))
 }

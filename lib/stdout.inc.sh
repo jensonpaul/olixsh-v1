@@ -32,7 +32,7 @@ function stdout_strpad()
 ##
 function stdout_getSizeFileHuman()
 {
-	logger_debug "stdout_getSizeFileHuman($1)"
+	logger_debug "stdout_getSizeFileHuman ($1)"
     [[ ! -f $1 ]] && echo -n "ERROR" && return
     echo -n $(du -h $1 | awk '{print $1}')
 }
@@ -43,11 +43,11 @@ function stdout_getSizeFileHuman()
 # @param $1     : Message
 # @param $2..$9 : Valeurs à inclure dans le message
 ##
-function stdout_head1()
+function stdout_printHead1()
 {
     local MSG=$1
     shift
-    logger_debug "stdout_head1 ($MSG, $*)"
+    logger_debug "stdout_printHead1 ($MSG, $*)"
     echo
     echo -e "${CVIOLET}$(printf "$MSG" "${CCYAN}$1${CVIOLET}" "${CCYAN}$2${CVIOLET}" "${CCYAN}$3${CVIOLET}")${CVOID}"
     echo -e "${CBLANC}===============================================================================${CVOID}"
@@ -59,12 +59,34 @@ function stdout_head1()
 # @param $1 : Message
 # @param $2 : Valeur à inclure dans le message
 ##
-function stdout_head2()
+function stdout_printHead2()
 {
-    logger_debug "stdout_head2 ($1, $2)"
+    logger_debug "stdout_printHead2 ($1, $2)"
     echo
     echo -e "${CVIOLET}$(printf "$1" "${CCYAN}$2${CVIOLET}")${CVOID}"
     echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
+}
+
+
+###
+# Afficher une ligne
+##
+function stdout_printLine()
+{
+    logger_debug "stdout_printLine ()"
+    echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
+}
+
+
+###
+# Affiche un message standard
+# @param $1 : Message à afficher
+# @param $2 : Couleur du message
+##
+function stdout_print()
+{
+    logger_debug "stdout_print ($1)"
+    echo -e "$2$1${CVOID}"
 }
 
 
@@ -73,15 +95,20 @@ function stdout_head2()
 # @param $1 : Valeur de retour
 # @param $2 : Message
 # @param $3 : Message de retour
+# @param $4 : Temps d'execution
 ##
-function stdout_messageReturn()
+function stdout_printMessageReturn()
 {
-	logger_debug "stdout_messageReturn ($1, $2, $3)"
+	logger_debug "stdout_printMessageReturn ($1, $2, $3, $4)"
     echo -en $(stdout_strpad "$2" 64 "." " :")
-    if [[ ! -z $3 ]]; then
-    	[[ $1 -eq 0 ]] && echo -e " ${CBLEU}$3${CVOID}" || echo -e " ${CROUGE}ERROR${CVOID}"
+    if [[ $1 -ne 0 ]]; then
+        echo -en " ${CROUGE}ERROR${CVOID}"
+    elif [[ -z $3 ]]; then
+        echo -en " ${CVERT}OK${CVOID}"
+        [[ ! -z $4 ]] && echo -e " ${Cvert}($4s)${CVOID}" || echo
     else
-    	[[ $1 -eq 0 ]] && echo -e " ${CVERT}OK${CVOID}" || echo -e " ${CROUGE}ERROR${CVOID}"
+        echo -en " ${CVERT}$3${CVOID}"
+        [[ ! -z $4 ]] && echo -e " ${Cvert}($4s)${CVOID}" || echo
     fi
     return $1
 }
