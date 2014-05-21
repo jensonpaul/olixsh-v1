@@ -115,13 +115,24 @@ function stdout_printMessageReturn()
 
 
 ###
+# Affiche un message d'information simple
+# @param $1 : Message
+# @param $2 : Valeur
+##
+function stdout_printInfo()
+{
+    logger_debug "stdout_printInfo ($1, $2)"
+    echo -en $(stdout_strpad "$1" 64 "." " :")
+    echo -e " ${CBLEU}$2${CVOID}"
+}
+
+
+###
 # Affiche le contenu d'un fichier
-# @param $1 : Valeur de retour
-# @param $2 : Nom du fichier
+# @param $1 : Nom du fichier
 ##
 function stdout_printFile()
 {
-    logger_debug "stdout_printFile ($1, $2)"
-    cat $2
-    return $1
+    logger_debug "stdout_printFile ($1)"
+    cat $1
 }

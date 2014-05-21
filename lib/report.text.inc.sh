@@ -7,6 +7,23 @@
 ##
 
 
+###
+# En tête du rapport
+##
+report_printHeader()
+{
+    echo >> ${OLIX_REPORT_FILENAME}
+}
+
+
+###
+# Pied de page du rapport
+##
+report_printFooter()
+{
+    echo >> ${OLIX_REPORT_FILENAME}
+}
+
 
 ###
 # Affiche un message d'en-tête de niveau 2
@@ -81,13 +98,24 @@ function report_printMessageReturn()
 
 
 ###
+# Affiche un message d'information simple
+# @param $1 : Message
+# @param $2 : Valeur
+##
+function report_printInfo()
+{
+    logger_debug "report_printInfo ($1, $2)"
+    echo -n $(stdout_strpad "$1" 64 "." " :") >> ${OLIX_REPORT_FILENAME}
+    echo " $2" >> ${OLIX_REPORT_FILENAME}
+}
+
+
+###
 # Affiche le contenu d'un fichier
-# @param $1 : Valeur de retour
-# @param $2 : Nom du fichier
+# @param $1 : Nom du fichier
 ##
 function report_printFile()
 {
-    logger_debug "report_printFile ($1, $2)"
-    cat $2 >> ${OLIX_REPORT_FILENAME}
-    return $1
+    logger_debug "report_printFile ($1)"
+    cat $1 >> ${OLIX_REPORT_FILENAME}
 }

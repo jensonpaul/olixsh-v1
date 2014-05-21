@@ -68,20 +68,23 @@ function backup_purge()
 {
     local LIST_FILE_PURGED=$(core_makeTemp)
     logger_debug "backup_purge ($1, $2, $3)"
+    local RET
 
     filesystem_purgeStandard "$1" "$2" "$3" "${LIST_FILE_PURGED}"
+    RET=$?
 
-    stdout_printMessageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
-    report_printMessageReturn $? "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
-    stdout_printFile $? "${LIST_FILE_PURGED}"
-    report_printFile $? "${LIST_FILE_PURGED}"
-    [[ $? -ne 0 ]] && logger_error
+    stdout_printInfo "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
+    report_printInfo "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
+    stdout_printFile "${LIST_FILE_PURGED}"
+    report_printFile "${LIST_FILE_PURGED}"
+    [[ ${RET} -ne 0 ]] && logger_error
 
-    stdout_printMessageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
-    report_printMessageReturn 0 "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
+    stdout_printInfo "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
+    report_printInfo "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
     find $1 -name "$2" -exec basename \{\} \; > ${LIST_FILE_PURGED}
-    stdout_printFile $? "${LIST_FILE_PURGED}"
-    report_printFile $? "${LIST_FILE_PURGED}"
+    RET=$?
+    stdout_printFile "${LIST_FILE_PURGED}"
+    report_printFile "${LIST_FILE_PURGED}"
 
     [[ $? -ne 0 ]] && logger_error
     rm -f ${LIST_FILE_PURGED}
