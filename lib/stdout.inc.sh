@@ -102,7 +102,7 @@ function stdout_printMessageReturn()
 	logger_debug "stdout_printMessageReturn ($1, $2, $3, $4)"
     echo -en $(stdout_strpad "$2" 64 "." " :")
     if [[ $1 -ne 0 ]]; then
-        echo -en " ${CROUGE}ERROR${CVOID}"
+        echo -e " ${CROUGE}ERROR${CVOID}"
     elif [[ -z $3 ]]; then
         echo -en " ${CVERT}OK${CVOID}"
         [[ ! -z $4 ]] && echo -e " ${Cvert}($4s)${CVOID}" || echo

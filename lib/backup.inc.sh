@@ -59,6 +59,29 @@ function backup_compress()
 
 
 ###
+# Transfert le fichier backup vers un serveur FTP
+# $1 : Type de FTP
+# $2 : Host du serveur FTP
+# $3 : Utilisateur du serveur FTP
+# $4 : Mot de passe du serveur FTP
+# $5 : Dossier de dépôt du serveur FTP
+# $6 : Nom du fichier à transferer
+##
+function backup_transfertFTP()
+{
+    logger_debug "backup_transfertFTP ($1, $2, $3, $4, $5, $6)"
+    local START=${SECONDS}
+
+    ftp_put "$1" "$2" "$3" "$4" "$5" "$6"
+
+    stdout_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
+    report_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
+    [[ $? -ne 0 ]] && logger_error
+    return $?
+}
+
+
+###
 # Purge des anciens fichiers
 # @param $1 : Dossier à analyser
 # @param $2 : Masque des fichiers à purger
@@ -110,8 +133,9 @@ function backup_baseMySQL()
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${DUMP}"
     DUMP=${OLIX_FUNCTION_RESULT}
         
-    #[ ! -z ${INI_BACKUP_FTP_SYNC} ] && filesystem_transfertFTP "${INI_BACKUP_FTP_SYNC}" "${INI_BACKUP_FTP_HOST}" "${INI_BACKUP_FTP_USER}" "${INI_BACKUP_FTP_PASS}" \
-    #                                                           "${INI_BACKUP_FTP_PATH}" "/tmp/${_PB_DUMP_NAME}"
+    [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]] && backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
+        "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
+        "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${DUMP}"
 
     backup_moveArchive "${DUMP}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
 
@@ -139,9 +163,10 @@ function backup_directory()
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${FILEBCK}"
     FILEBCK=${OLIX_FUNCTION_RESULT}
-        
-    #[ ! -z ${INI_BACKUP_FTP_SYNC} ] && filesystem_transfertFTP "${INI_BACKUP_FTP_SYNC}" "${INI_BACKUP_FTP_HOST}" "${INI_BACKUP_FTP_USER}" "${INI_BACKUP_FTP_PASS}" \
-    #                                                           "${INI_BACKUP_FTP_PATH}" "/tmp/${_PB_FILEBCK_NAME}"
+    
+    [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]] && backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
+        "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
+        "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${FILEBCK}"
 
     backup_moveArchive "${FILEBCK}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
 

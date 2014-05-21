@@ -13,6 +13,7 @@
 
 source lib/project.inc.sh
 source lib/backup.inc.sh
+source lib/ftp.inc.sh
 
 
 ###
@@ -39,12 +40,14 @@ config_require2 "OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE" "OLIX_CONF_SERVER_BACKUP_
 config_require2 "OLIX_CONF_PROJECT_BACKUP_REPORT_REPO" "OLIX_CONF_SERVER_BACKUP_REPORT_REPO" "/tmp"
 config_require2 "OLIX_CONF_PROJECT_BACKUP_REPORT_MAIL" "OLIX_CONF_SERVER_BACKUP_REPORT_MAIL" ""
 
-config_require2 "OLIX_CONF_PROJECT_FTP_SYNC" "OLIX_CONF_SERVER_FTP_SYNC" false
-if [[ "${OLIX_CONF_PROJECT_FTP_SYNC}" != "false" ]]; then
-	config_require2 "OLIX_CONF_PROJECT_FTP_HOST" "OLIX_CONF_SERVER_FTP_HOST" "${USER}"
-	config_require2 "OLIX_CONF_PROJECT_FTP_PASS" "OLIX_CONF_SERVER_FTP_PASS" ""
-	[[ -z ${OLIX_CONF_PROJECT_FTP_PASS} ]] && logger_error "La configuration OLIX_CONF_PROJECT_FTP_PASS n'est pas définie"
-	config_require2 "OLIX_CONF_PROJECT_FTP_PATH" "OLIX_CONF_SERVER_FTP_PATH" "/"
+config_require2 "OLIX_CONF_PROJECT_BACKUP_FTP_SYNC" "OLIX_CONF_SERVER_BACKUP_FTP_SYNC" false
+if [[ "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" != "false" ]]; then
+	ftp_isInstalled ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}
+	config_require2 "OLIX_CONF_PROJECT_BACKUP_FTP_HOST" "OLIX_CONF_SERVER_BACKUP_FTP_HOST" "localhost"
+	config_require2 "OLIX_CONF_PROJECT_BACKUP_FTP_USER" "OLIX_CONF_SERVER_BACKUP_FTP_USER" "${USER}"
+	config_require2 "OLIX_CONF_PROJECT_BACKUP_FTP_PASS" "OLIX_CONF_SERVER_BACKUP_FTP_PASS" ""
+	[[ -z ${OLIX_CONF_PROJECT_BACKUP_FTP_PASS} ]] && logger_error "La configuration OLIX_CONF_PROJECT_BACKUP_FTP_PASS n'est pas définie"
+	config_require2 "OLIX_CONF_PROJECT_BACKUP_FTP_PATH" "OLIX_CONF_SERVER_BACKUP_FTP_PATH" "/"
 fi
 
 config_require "OLIX_CONF_SERVER_MYSQL_HOST" "localhost"
@@ -109,6 +112,24 @@ for I in ${OLIX_CONF_PROJECT_BACKUP_PATH_EXTRA}; do
 	backup_directory "${I}" "${I//\//_}"
 
 done
+
+
+###
+# Synchronisation avec le serveur FTP
+##
+if [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]]; then
+	stdout_printHead2 "Synchronisation avec le serveur FTP %s" "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}"
+	report_printHead2 "Synchronisation avec le serveur FTP %s" "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}"
+	START=${SECONDS}
+
+	ftp_synchronize "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" \
+		"${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
+        "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
+    
+    stdout_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
+    report_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
+	[[ $? -ne 0 ]] && logger_error
+fi
 
 
 ###

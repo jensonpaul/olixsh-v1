@@ -85,7 +85,7 @@ function report_printMessageReturn()
 	logger_debug "report_printMessageReturn ($1, $2, $3)"
     echo -n $(stdout_strpad "$2" 64 "." " :") >> ${OLIX_REPORT_FILENAME}
     if [[ $1 -ne 0 ]]; then
-        echo -n " ERROR" >> ${OLIX_REPORT_FILENAME}
+        echo " ERROR" >> ${OLIX_REPORT_FILENAME}
     elif [[ -z $3 ]]; then
         echo -n " OK" >> ${OLIX_REPORT_FILENAME}
         [[ ! -z $4 ]] && echo " ($4s)" >> ${OLIX_REPORT_FILENAME} || echo  >> ${OLIX_REPORT_FILENAME}
