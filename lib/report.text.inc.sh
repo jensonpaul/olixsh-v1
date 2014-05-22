@@ -12,6 +12,7 @@
 ##
 report_printHeader()
 {
+    logger_debug "report_printHeader ()"
     echo >> ${OLIX_REPORT_FILENAME}
 }
 
@@ -21,6 +22,7 @@ report_printHeader()
 ##
 report_printFooter()
 {
+    logger_debug "report_printFooter ()"
     echo >> ${OLIX_REPORT_FILENAME}
 }
 

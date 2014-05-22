@@ -18,6 +18,7 @@ OLIX_INSTALL_PACKAGES_LIST="apache php mysql ftp samba nfs postfix collectd logw
 ##
 function install_loadConfiguration()
 {
+    logger_debug "install_loadConfiguration ()"
     logger_debug "Vérification de la présence de fichier de conf ${OLIX_INSTALL_PATH_CONFIG_FILE}"
     if [[ ! -r ${OLIX_INSTALL_PATH_CONFIG_FILE} ]]; then
         logger_warning "${OLIX_INSTALL_PATH_CONFIG_FILE} absent"
@@ -35,6 +36,7 @@ function install_loadConfiguration()
 ##
 function install_isPackage()
 {
+    logger_debug "install_isPackage ($1)"
 	[[ "|${OLIX_INSTALL_PACKAGES_LIST// /|}|" =~ "|$1|" ]] && return 0
 	return 1
 }
@@ -45,6 +47,7 @@ function install_isPackage()
 ##
 function install_printChoicePackage()
 {
+    logger_debug "install_printChoicePackage ()"
 	echo
     echo -e "${CVIOLET} Menu du choix de l'application à configurer${CVOID}"
     echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
@@ -74,7 +77,7 @@ function install_printChoicePackage()
 ##
 function install_linkNodeConfiguration()
 {
-    logger_debug "Lien de $1 vers $2"
+    logger_debug "install_linkNodeConfiguration ($1, $2, $3)"
     [[ ! -f $1 ]] && logger_error "Le fichier $1 n'existe pas"
     ln -sf $1 $2 > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error
@@ -90,7 +93,7 @@ function install_linkNodeConfiguration()
 ##
 function install_CopyConfiguration()
 {
-    logger_debug "Copie de $1 vers $2"
+    logger_debug "install_CopyConfiguration ($1, $2, $3)"
     [[ ! -f $1 ]] && logger_error "Le fichier $1 n'existe pas"
     cp $1 $2 > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error
@@ -104,6 +107,7 @@ function install_CopyConfiguration()
 ##
 function install_backupFileOriginal()
 {
+    logger_debug "install_backupFileOriginal ($1)"
     local ORIGINAL="$1.original"
     if [ ! -f ${ORIGINAL} ]; then
         logger_debug "Sauvegarde de l'original $1"

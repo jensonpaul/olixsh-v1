@@ -39,6 +39,7 @@ function core_exit()
 ##
 function core_checkIfRoot()
 {
+    logger_debug "core_checkIfRoot ()"
     [[ $(id -u) != 0 ]] && return 1
     return 0
 }
@@ -49,13 +50,15 @@ function core_checkIfRoot()
 ##
 function core_checkInstall()
 {
-    logger_debug "Vérification de la présence de lien ${OLIX_SHELL_LINK}"
+    logger_debug "core_checkInstall ()"
+
+    logger_info "Vérification de la présence de lien ${OLIX_SHELL_LINK}"
     if [[ ! -x ${OLIX_SHELL_LINK} ]]; then
         logger_warning "${OLIX_SHELL_LINK} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"
     fi
 
-    logger_debug "Vérification de la présence de fichier de conf ${OLIX_CONFIG_FILE}"
+    logger_info "Vérification de la présence de fichier de conf ${OLIX_CONFIG_FILE}"
     if [[ ! -f ${OLIX_CONFIG_FILE} ]]; then
         logger_warning "${OLIX_CONFIG_FILE} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"
@@ -63,13 +66,13 @@ function core_checkInstall()
 
     source ${OLIX_CONFIG_FILE}
 
-    logger_debug "Vérification de la présence de chemin de configuration ${OLIX_CONFIG_PATH}"
+    logger_info "Vérification de la présence de chemin de configuration ${OLIX_CONFIG_PATH}"
     if [[ ! -d "${OLIX_CONFIG_PATH}" ]]; then
         logger_warning "${OLIX_CONFIG_PATH} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"
     fi
 
-    logger_debug "Vérification de la présence de fichier de configuration server ${OLIX_CONFIG_SERVER}"
+    logger_info "Vérification de la présence de fichier de configuration server ${OLIX_CONFIG_SERVER}"
     if [[ ! -r "${OLIX_CONFIG_SERVER}" ]]; then
         logger_warning "${OLIX_CONFIG_SERVER} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"

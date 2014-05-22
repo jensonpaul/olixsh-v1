@@ -51,7 +51,6 @@ source lib/mysql.inc.sh
 
 
 logger_checkLogger
-logger_debug "Version : ${OLIX_VERSION}, Revision : ${OLIX_REVISION}, Release : ${OLIX_RELEASE}"
 
 
 ###
@@ -59,7 +58,6 @@ logger_debug "Version : ${OLIX_VERSION}, Revision : ${OLIX_REVISION}, Release : 
 ##
 OLIX_MODULE=""
 OLIX_ARGS=""
-logger_debug "Traitement des options de la ligne de commande"
 while [[ $# -ge 1 ]]; do
     case $1 in
         -d|--debug) 
@@ -92,6 +90,10 @@ while [[ $# -ge 1 ]]; do
     esac
     shift
 done
+
+logger_info "Version : ${OLIX_VERSION}, Revision : ${OLIX_REVISION}, Release : ${OLIX_RELEASE}"
+
+
 
 logger_debug "Module #${OLIX_MODULE}#"
 logger_debug "Args #${OLIX_ARGS}#"

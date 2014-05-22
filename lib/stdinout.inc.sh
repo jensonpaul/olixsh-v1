@@ -22,6 +22,8 @@ OLIX_STDINOUT_SERVER_BASE=""
 ##
 function stdinout_printUsage()
 {
+    logger_debug "stdinout_printUsage ()"
+
     echo -e "${CBLANC} Usage : ${CBLEU}olixsh ${Ccyan}[OPTIONS] ${CJAUNE}COMMAND ${Cviolet}[PARAMETER]${CVOID}"
 
     echo ""
@@ -43,6 +45,7 @@ function stdinout_printUsage()
 ##
 function stdinout_printVersion()
 {
+    logger_debug "stdinout_printVersion ()"
     local VERSION
     VERSION="Ver ${CVIOLET}${OLIX_VERSION}${CVOID}"
     if [[ "${OLIX_RELEASE}" == "true" ]]; then    
@@ -59,6 +62,7 @@ function stdinout_printVersion()
 ##
 function stdinout_printListModule()
 {
+    logger_debug "stdinout_printListModule ()"
     echo -e "${CJAUNE} io${CVOID} - ${Cjaune}install:olixsh${CVOID}    : Installer oliXsh sur le serveur"
     echo -e "${CJAUNE} ic${CVOID} - ${Cjaune}install:config${CVOID}    : Installer les fichiers de configuration sur le serveur"
     echo -e "${CJAUNE} is${CVOID} - ${Cjaune}install:server${CVOID}    : Configuration du systeme Ubuntu"
@@ -75,6 +79,8 @@ function stdinout_printListModule()
 ##
 function stdinout_readChoiceModule()
 {
+    logger_debug "stdinout_readChoiceModule ()"
+
     while true; do
         stdinout_printVersion
         echo -e "Copyright (c) 2013, $(date '+%Y') Olivier Pitois. All rights reserved."
@@ -109,6 +115,7 @@ function stdinout_readChoiceModule()
 ##
 function stdinout_readConnexionServer()
 {
+    logger_debug "stdinout_readConnexionServer ($1, $2, $3, $4, $5, $6)"
     local REPONSE
     OLIX_STDINOUT_SERVER_HOST=$3
     OLIX_STDINOUT_SERVER_PORT=$4
@@ -154,9 +161,9 @@ function stdinout_readConnexionServer()
 ##
 function stdinout_readConnexionServerSSH()
 {
+    logger_debug "stdinout_readConnexionServerSSH ($1)"
     local CODE=$1
     [[ -z ${CODE} ]] && CODE="default"
-    logger_debug "Demande des infos de connexion distante SSH"
     stdinout_readConnexionServer "ssh" "${CODE}" \
         "${OLIX_STDINOUT_SERVER_HOST}" "22" "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}"
 }
@@ -168,9 +175,9 @@ function stdinout_readConnexionServerSSH()
 ##
 function stdinout_readConnexionServerMySQL()
 {
+    logger_debug "stdinout_readConnexionServerMySQL ($1)"
     local CODE=$1
     [[ -z ${CODE} ]] && CODE="default"
-    logger_debug "Demande des infos de connexion distante MySQL"
     stdinout_readConnexionServer "mysql" "${CODE}" \
         "${OLIX_STDINOUT_SERVER_HOST}" "3306" "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}"
 }

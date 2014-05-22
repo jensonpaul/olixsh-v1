@@ -32,12 +32,14 @@ function filesystem_createFileExclude()
 ##
 function filesystem_synchronize()
 {
+	logger_debug "filesystem_synchronize ($1, $2, $3, $4)"
 	local FILE_EXCLUDE
     FILE_EXCLUDE=$(core_makeTemp)
     filesystem_createFileExclude "${FILE_EXCLUDE}" "$4"
-	logger_debug "Synchronisation port $1 de $2 vers $3"
+	
     rsync --rsh="ssh -p $1" --archive --compress --progress --delete --exclude-from=${FILE_EXCLUDE} $2/ $3/ 2> ${OLIX_LOGGER_FILE_ERR}
     RET=$?
+
 	rm -f ${FILE_EXCLUDE}
 	[[ $RET -ne 0 ]] && return 1
 	return 0
@@ -51,7 +53,7 @@ function filesystem_synchronize()
 ##
 function filesystem_compressGZ()
 {
-	logger_debug "Compression GZIP de $1"
+	logger_debug "filesystem_compressGZ ($1)"
 	gzip --force $1 > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	[[ $? -ne 0 ]] && return 1
 	echo "$1.gz"
@@ -66,7 +68,7 @@ function filesystem_compressGZ()
 ##
 function filesystem_compressBZ2()
 {
-	logger_debug "Compression BZIP2 de $1"
+	logger_debug "filesystem_compressBZ2 ($1)"
 	bzip2 --force $1 > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	[[ $? -ne 0 ]] && return 1
 	echo "$1.bz2"

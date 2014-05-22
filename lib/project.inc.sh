@@ -19,11 +19,12 @@ OLIX_PROJECT_CODE=""
 ##
 function project_printChoiceProject()
 {
+    logger_debug "project_printChoiceProject ()"
     local PROJECT_LIST
     local PROJECT
     local NAME
     echo -e "${CBLANC}Choix du projet${CVOID}"
-    logger_debug "Listing des projets"
+    
     PROJECT_LIST=$(find ${OLIX_PROJECT_PATH_CONFIG} -maxdepth 1 -mindepth 1 -type d)
     for I in ${PROJECT_LIST}; do
         if project_isExist $(basename $I); then
@@ -48,6 +49,7 @@ function project_printChoiceProject()
 ##
 function project_isExist()
 {
+    logger_debug "project_isExist ()"
     [[ -r ${OLIX_PROJECT_PATH_CONFIG}/$1/${OLIX_PROJECT_NAME_CONFIG} ]] && return 0
     return 1
 }
@@ -59,15 +61,16 @@ function project_isExist()
 ##
 function project_loadConfiguration()
 {
+    logger_debug "project_loadConfiguration ($1)"
     local FILECFG="${OLIX_PROJECT_PATH_CONFIG}/$1/${OLIX_PROJECT_NAME_CONFIG}"
-    logger_debug "Vérification de la présence de fichier de conf ${FILECFG}"
+    logger_info "Vérification de la présence de fichier de conf ${FILECFG}"
     if [[ ! -r ${FILECFG} ]]; then
         logger_warning "${FILECFG} absent"
         logger_error "Impossible de charger le fichier de configuration ${FILECFG}"
     fi
     OLIX_PROJECT_PATH_CONFIG="${OLIX_PROJECT_PATH_CONFIG}/$1"
 
-    logger_debug "Chargement de ${FILECFG}"
+    logger_info "Chargement de ${FILECFG}"
     source ${FILECFG}
 }
 
@@ -80,6 +83,7 @@ function project_loadConfiguration()
 ##
 function project_getFileConf()
 {
+    logger_debug "project_getFileConf ($1, $2)"
     local FILECFG
     FILECFG="$1.${OLIX_PROJECT_UBUNTU_VERSION_RELEASE}.${OLIX_CONF_SERVER_ENVIRONNEMENT}$2"
     if [[ -f ${FILECFG} ]]; then echo "${FILECFG}"; return; fi
@@ -99,6 +103,7 @@ function project_getFileConf()
 ##
 function project_checkArguments()
 {
+    logger_debug "project_checkArguments ()"
     if [[ ! -z "${OLIX_ARGS}" ]]; then
         OLIX_ARGS=$(echo "${OLIX_ARGS}" | sed -e 's/^ *//' -e 's/ *$//' | awk '{print $1}')
         if project_isExist ${OLIX_ARGS}; then

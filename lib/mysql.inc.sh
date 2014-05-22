@@ -12,6 +12,7 @@
 ##
 function mysql_isInstalled()
 {
+    logger_debug "mysql_isInstalled ()"
 	[[ ! -f /etc/mysql/my.cnf ]] && return 1
 	return 0
 }
@@ -22,6 +23,7 @@ function mysql_isInstalled()
 ##
 function mysql_isRunning()
 {
+    logger_debug "mysql_isRunning ()"
 	netstat -ntpul | grep mysql > /dev/null 2>&1
 	[[ $? -ne 0 ]] && return 1
 	return 0
@@ -39,7 +41,7 @@ function mysql_isRunning()
 function mysql_getListDatabases()
 {
     local DATABASES
-    logger_debug "Retourne la liste des bases de $1"
+    logger_debug "mysql_getListDatabases ($1, $2, $3, $4)"
     if [[ -z $4 ]]; then
         DATABASES=$(mysql --host=$1 --port=$2 --user=$3 -p --execute='SHOW DATABASES' | grep -vE "(Database|information_schema|performance_schema|mysql|lost\+found)")
     else
@@ -57,6 +59,7 @@ function mysql_getListDatabases()
 ##
 function mysql_getListDatabasesLocal()
 {
+    logger_debug "mysql_getListDatabasesLocal ()"
     echo -n $(mysql_getListDatabases ${OLIX_CONF_SERVER_MYSQL_HOST} ${OLIX_CONF_SERVER_MYSQL_PORT} ${OLIX_CONF_SERVER_MYSQL_USER} ${OLIX_CONF_SERVER_MYSQL_PASS})
     [[ $? -ne 0 ]] && return 1
 	return 0
@@ -75,6 +78,7 @@ function mysql_getListDatabasesLocal()
 ##
 function mysql_printMenuListDataBases()
 {
+    logger_debug "mysql_printMenuListDataBases ($1, $2, $3, $4, $5, $6)"
     local BASE
     local LIST_BASE
     LIST_BASE=$(mysql_getListDatabases $1 $2 $3 $4)
@@ -112,6 +116,7 @@ function mysql_printMenuListDataBases()
 ##
 function mysql_printMenuListDataBasesLocal()
 {
+    logger_debug "mysql_printMenuListDataBasesLocal ($1, $2)"
     mysql_printMenuListDataBases "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 								 "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 								 "$1" "$2"
@@ -129,7 +134,7 @@ function mysql_printMenuListDataBasesLocal()
 ##
 function mysql_createRoleOliX()
 {
-	logger_debug "MySQL -- GRANT ALL PRIVILEGES ON *.* TO '$4'@'localhost' IDENTIFIED BY '$5' WITH GRANT OPTION"
+	logger_debug "mysql_createRoleOliX ($1, $2, $3, $4, $5)"
 	echo -en "Mot de passe à la base avec l'utilisateur ${CCYAN}root${CVOID} "
 	mysql --host=$1 --port=$2 --user=$3 -p \
 		--execute="GRANT ALL PRIVILEGES ON *.* TO '$4'@'localhost' IDENTIFIED BY '$5' WITH GRANT OPTION;" \
@@ -151,7 +156,7 @@ function mysql_createRoleOliX()
 ##
 function mysql_createRole()
 {
-	logger_debug "MySQL - $1 -- GRANT ALL PRIVILEGES ON $7.* TO '$5'@'localhost' IDENTIFIED BY '$6'"
+	logger_debug "mysql_createRole ($1, $2, $3, $4, $5, $6, $7)"
 	if [[ -z $4 ]]; then
     	mysql --host=$1 --port=$2 --user=$3 -p --execute="GRANT ALL PRIVILEGES ON $7.* TO '$5'@'localhost' IDENTIFIED BY '$6';" > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	else
@@ -170,6 +175,7 @@ function mysql_createRole()
 ##
 function mysql_createRoleLocal()
 {
+    logger_debug "mysql_createRoleLocal ($1, $2, $3)"
 	mysql_createRole "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 					 "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 					 "$1" "$2" "$3"
@@ -187,7 +193,7 @@ function mysql_createRoleLocal()
 ##
 function mysql_createDatabase()
 {
-    logger_debug "MySQL - $1 -- CREATE DATABASE $5"
+    logger_debug "mysql_createDatabase ($1, $2, $3, $4, $5)"
     if [[ -z $4 ]]; then
     	mysql --host=$1 --port=$2 --user=$3 -p --execute="CREATE DATABASE $5;" > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	else
@@ -204,6 +210,7 @@ function mysql_createDatabase()
 ##
 function mysql_createDatabaseLocal()
 {
+    logger_debug "mysql_createDatabaseLocal ($1)"
     mysql_createDatabase "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 						 "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 						 "$1"
@@ -221,7 +228,7 @@ function mysql_createDatabaseLocal()
 ##
 function mysql_dropDatabase()
 {
-	logger_debug "MySQL - $1 -- DROP DATABASE IF EXISTS $5"
+	logger_debug "mysql_dropDatabase ($1, $2, $3, $4, $5)"
     if [[ -z $4 ]]; then
     	mysql --host=$1 --port=$2 --user=$3 -p --execute="DROP DATABASE IF EXISTS $5;" > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	else
@@ -238,6 +245,7 @@ function mysql_dropDatabase()
 ##
 function mysql_dropDatabaseLocal()
 {
+    logger_debug "mysql_dropDatabaseLocal ($1)"
 	mysql_dropDatabase "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 					   "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 					   "$1"
@@ -254,7 +262,7 @@ function mysql_dropDatabaseLocal()
 # @param $5 : Nom de la base destination
 ##
 function mysql_synchronizeDatabase() {
-	logger_debug "MySQL -- Synchronisation de $1:$4 vers localhost:$5"
+	logger_debug "mysql_synchronizeDatabase ($1, $2, $3, $4, $5)"
 	echo -en "Mot de passe MySQL de ${CCYAN}$3@$1${CVOID} "
 	for J in 1 2 3; do
 		mysqldump -v --opt --host=$1 --port=$2 --user=$3 -p $4 | \
@@ -278,7 +286,7 @@ function mysql_synchronizeDatabase() {
 ##
 function mysql_dumpDatabase()
 {
-	logger_debug "MySQL -- Dump de la base $1:$5 vers $6"
+	logger_debug "mysql_dumpDatabase ($1, $2, $3, $4, $5, $6)"
     if [[ -z $4 ]]; then
         mysqldump --opt --host=$1 --port=$2 --user=$3 -p $5 > $6 2>> ${OLIX_LOGGER_FILE_ERR}
     else
@@ -296,6 +304,7 @@ function mysql_dumpDatabase()
 ##
 function mysql_dumpDatabaseLocal()
 {
+    logger_debug "mysql_dumpDatabaseLocal ($1, $2)"
 	mysql_dumpDatabase "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 					   "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 					   "$1" "$2"
@@ -313,7 +322,7 @@ function mysql_dumpDatabaseLocal()
 # @param $6  : Nom de la base
 ##
 function mysql_restoreDatabase() {
-	logger_debug "MySQL -- Restauration du dump $5 vers la base $1:$6"
+	logger_debug "mysql_restoreDatabase ($1, $2, $3, $4, $5, $6)"
     if [[ -z $4 ]]; then
         mysql --host=$1 --port=$2 --user=$3 -p $6 < $5 2>> ${OLIX_LOGGER_FILE_ERR}
     else
@@ -331,6 +340,7 @@ function mysql_restoreDatabase() {
 ##
 function mysql_restoreDatabaseLocal()
 {
+    logger_debug "mysql_restoreDatabaseLocal ($1, $2)"
 	mysql_restoreDatabase "${OLIX_CONF_SERVER_MYSQL_HOST}" "${OLIX_CONF_SERVER_MYSQL_PORT}" \
 					      "${OLIX_CONF_SERVER_MYSQL_USER}" "${OLIX_CONF_SERVER_MYSQL_PASS}" \
 					      "$1" "$2"

@@ -12,6 +12,7 @@
 ##
 report_printHeader()
 {
+    logger_debug "report_printHeader ()"
     echo '<!DOCTYPE html>' >> ${OLIX_REPORT_FILENAME}
     echo '<html>' >> ${OLIX_REPORT_FILENAME}
     echo '<head>' >> ${OLIX_REPORT_FILENAME}
@@ -39,6 +40,7 @@ report_printHeader()
 ##
 report_printFooter()
 {
+    logger_debug "report_printFooter ()"
     echo '</body>' >> ${OLIX_REPORT_FILENAME}
     echo '</html>' >> ${OLIX_REPORT_FILENAME}
 }
