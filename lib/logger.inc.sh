@@ -19,7 +19,7 @@ OLIX_LOGGER_FACILITY="user" # Origine de l'erreur
 ##
 OLIX_LOGGER_FILE="/tmp/olix.log" # Fichier de log principal
 OLIX_LOGGER_BUFFER=""       # Buffer du log
-OLIX_LOGGER_FILE_ERR=$(mktemp --dry-run).olix.err # Fichier de sortie d'erreur
+OLIX_LOGGER_FILE_ERR=$(mktemp --dry-run /tmp/olix.XXXXXXXXXX.err) # Fichier de sortie d'erreur
 
 
 
@@ -96,7 +96,7 @@ function logger_print()
 
 	case "${LEVEL}" in
 		debug) 		echo -e "${Ccyan}${MESSAGE}${CVOID}" >&2;;
-		info)		echo -e "${Cviolet}${MESSAGE}${CVOID}";;
+		info)		echo -e "${MESSAGE}";;
 		warning)	echo -e "${Cjaune}${MESSAGE}${CVOID}";;
 		error)		echo -e "${Crouge}${MESSAGE}${CVOID}";;
 	esac
@@ -154,3 +154,4 @@ function logger_error()
     fi
     core_exit 1 "$@"
 }
+

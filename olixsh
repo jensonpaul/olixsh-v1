@@ -41,8 +41,10 @@ cd $(dirname $FILE_SHELL)
 ##
 source lib/constant.inc.sh
 source lib/core.inc.sh
+source lib/config.inc.sh
 source lib/color.inc.sh
 source lib/stdinout.inc.sh
+source lib/stdout.inc.sh
 source lib/logger.inc.sh
 source lib/filesystem.inc.sh
 source lib/mysql.inc.sh
@@ -113,13 +115,13 @@ source ${OLIX_CONFIG_SERVER}
 
 
 if [[ ! -z ${OLIX_MODULE} ]]; then
-    OLIX_MODULE="modules/${OLIX_MODULE/:/-}.sh"
-    logger_debug "Script module : ${OLIX_MODULE}"
-    if [[ -r ${OLIX_MODULE} ]]; then
-        source ${OLIX_MODULE}
+    OLIX_MODULE_SCRIPT="modules/${OLIX_MODULE/:/-}.sh"
+    logger_debug "Script module : ${OLIX_MODULE_SCRIPT}"
+    if [[ -r ${OLIX_MODULE_SCRIPT} ]]; then
+        source ${OLIX_MODULE_SCRIPT}
         core_exit 0
     fi
-    logger_debug "Le module ${OLIX_MODULE} est inexistant"
+    logger_debug "Le module ${OLIX_MODULE_SCRIPT} est inexistant"
 fi
 
 

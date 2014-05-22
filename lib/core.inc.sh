@@ -8,6 +8,9 @@
 ##
 
 
+# Pointeur de temps de départ du script
+OLIX_CORE_EXEC_START=${SECONDS}
+
 
 ###
 # Sortie du programme shell avec nettoyage
@@ -19,7 +22,10 @@ function core_exit()
     local CODE="$1"
     local REASON="$2"
 
-    rm -rf ${OLIX_LOGGER_FILE_ERR} > /dev/null 2>&1
+    logger_debug "core_exit ($1)"
+
+    logger_debug "Effacement des fichiers temporaires"
+    rm -f /tmp/olix.* > /dev/null 2>&1
 
     if [[ -n "${REASON}" ]]; then 
         logger_info "EXIT : ${REASON}"
@@ -68,4 +74,45 @@ function core_checkInstall()
         logger_warning "${OLIX_CONFIG_SERVER} absent"
         logger_error "oliXsh n'a pas été installé correctement. Relancer le script 'olixsh install:olixsh'"
     fi
+}
+
+
+###
+# Créer un fichier temporaire
+##
+function core_makeTemp()
+{
+    echo -n $(mktemp /tmp/olix.XXXXXXXXXX.tmp)
+}
+
+
+
+###
+# Envoi d'un mail
+# @param $1 : Format html ou text
+# @param $2 : Email
+# @param $3 : Chemin du fichier contenant le contenu du mail
+# @param $4 : Sujet du mail
+##
+function core_sendMail()
+{
+    logger_debug "core_sendMail ($1, $2, $3, $4)"
+
+    local SUBJECT SERVER
+    SERVER="${OLIX_CONF_SERVER_NAME}"
+    [[ -z ${SERVER} ]] && SERVER=${HOSTNAME}
+    SUBJECT="[${SERVER}:${OLIX_MODULE}] $4"
+
+    if [[ "$1" == "html" || "$1" == "HTML" ]]; then
+        mailx -s "${SUBJECT}" -a "Content-type: text/html; charset=UTF-8" $2 < $3
+    else
+        mailx -s "${SUBJECT}" $2 < $3
+    fi
+    return $?
+}
+
+
+function core_getTimeExec()
+{
+    echo -n $((SECONDS-OLIX_CORE_EXEC_START))
 }

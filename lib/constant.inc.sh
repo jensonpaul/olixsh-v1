@@ -34,6 +34,7 @@ OLIX_SYSTEM_TIME=$(date '+%X')
 # Jour d'ecoute
 OLIX_SYSTEM_DATE=$(date '+%F')
 
+
 # Chargement des variables systèmes
 #source etc/system.env.sh
 
