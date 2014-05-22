@@ -40,6 +40,27 @@ echo -e "${CBLANC}--------------------------------------${CVOID}"
 
 
 ###
+# Vérification des binaires
+##
+which logger > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"logger\" n'est pas présent"
+which gzip > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"gzip\" n'est pas présent"
+which bzip2 > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"bzip2\" n'est pas présent"
+which tar > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"tar\" n'est pas présent"
+which rsync > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"rsync\" n'est pas présent"
+which mysql > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"mysql\" n'est pas présent"
+which mysqldump > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"mysqldump\" n'est pas présent"
+which lftp > /dev/null 2>&1
+[[ $? -ne 0 ]] && logger_warning "Le binaire \"lftp\" n'est pas présent"
+
+
+###
 # Demande du dossier où sera stocké la configuration
 ##
 echo -en "Emplacement de la configuration ${CJAUNE}[${IO_PATH_DEST_CONFIG}]${CVOID} ? "
@@ -112,6 +133,7 @@ if $(mysql_isRunning); then
     done
     [ $RET -ne 0 ] && logger_error "Impossible d'executer le requête"
 fi
+
 
 ###
 # Effectue un lien vers l'interpréteur olixsh depuis /bin/olixsh pour l'installation
