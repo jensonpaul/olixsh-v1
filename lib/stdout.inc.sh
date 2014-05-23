@@ -20,7 +20,7 @@ function stdout_strpad()
 	logger_debug "stdout_strpad ($1, $2, $3, $4)"
     echo -en "$1"
     for (( J=${#1} ; J<=$2 ; J++ )); do 
-        echo -n $3
+        echo -en "$3"
     done
     echo -en "$4"
 }
@@ -35,6 +35,48 @@ function stdout_getSizeFileHuman()
 	logger_debug "stdout_getSizeFileHuman ($1)"
     [[ ! -f $1 ]] && echo -n "ERROR" && return
     echo -n $(du -h $1 | awk '{print $1}')
+}
+
+
+###
+# Affiche l'usage de la commande
+# @param $1 : Nom du module
+# @param $2 : Description
+##
+function stdout_printUsage()
+{
+    logger_debug "stdout_printUsage ($1)"
+    local MODULE="MODULE"
+    [[ ! -z $1 ]] && MODULE=$1
+    stdout_printVersion
+    echo
+    echo -e "${CBLANC} Usage : ${CBLEU}olixsh ${Ccyan}[OPTIONS] ${CJAUNE}${MODULE} ${Cviolet}[PARAMETER]${CVOID}"
+    [[ ! -z $2 ]] && echo && echo -e "$2"
+    echo
+    echo -e "${Ccyan}OPTIONS${CVOID}"
+    echo -en "${CBLANC}  --help|-h          ${CVOID} : "; echo "Affiche l'aide."
+    echo -en "${CBLANC}  --version          ${CVOID} : "; echo "Affiche le numéro de version."
+    echo -en "${CBLANC}  --verbose|-v       ${CVOID} : "; echo "Mode verbeux."
+    echo -en "${CBLANC}  --debug|-d         ${CVOID} : "; echo "Mode debug très verbeux."
+    echo -en "${CBLANC}  --no-warnings      ${CVOID} : "; echo "Désactive les messages d'alerte."
+}
+
+
+###
+# Affiche la version
+##
+function stdout_printVersion()
+{
+    logger_debug "stdout_printVersion ()"
+    local VERSION
+    VERSION="Ver ${CVIOLET}${OLIX_VERSION}${CVOID}"
+    if [[ "${OLIX_RELEASE}" == "true" ]]; then    
+        VERSION="${VERSION} Release"
+    else
+        VERSION="${VERSION}.${OLIX_REVISION}"
+    fi
+    echo -e "${CCYAN}oliXsh${CVOID} ${VERSION}, for Linux"
+    echo -e "Copyright (c) 2013, $(date '+%Y') Olivier Pitois. All rights reserved."
 }
 
 

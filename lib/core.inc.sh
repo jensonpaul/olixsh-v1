@@ -81,13 +81,22 @@ function core_checkInstall()
 
 
 ###
+# Charge la configuration principale
+##
+function core_loadConfiguration()
+{
+    logger_debug "core_loadConfiguration ()"
+    source ${OLIX_CONFIG_SERVER}
+}
+
+
+###
 # Créer un fichier temporaire
 ##
 function core_makeTemp()
 {
     echo -n $(mktemp /tmp/olix.XXXXXXXXXX.tmp)
 }
-
 
 
 ###

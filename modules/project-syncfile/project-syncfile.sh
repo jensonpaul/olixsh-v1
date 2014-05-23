@@ -29,10 +29,10 @@ echo
 echo -e "${CVIOLET} Copie des fichiers dans ${CCYAN}${OLIX_CONF_PROJECT_PATH}${CVOID}"
 echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
 
-stdinout_readConnexionServerSSH ${OLIX_PROJECT_CODE}
+stdin_readConnexionServerSSH ${OLIX_PROJECT_CODE}
 
-filesystem_synchronize "${OLIX_STDINOUT_SERVER_PORT}" \
-                       "${OLIX_STDINOUT_SERVER_USER}@${OLIX_STDINOUT_SERVER_HOST}:${OLIX_STDINOUT_SERVER_PATH}" \
+filesystem_synchronize "${OLIX_STDIN_SERVER_PORT}" \
+                       "${OLIX_STDIN_SERVER_USER}@${OLIX_STDIN_SERVER_HOST}:${OLIX_STDIN_SERVER_PATH}" \
                        "${OLIX_CONF_PROJECT_PATH}" \
                        "${OLIX_CONF_PROJECT_SYNCFILE_EXCLUDE}"
 [[ $? -ne 0 ]] && logger_error

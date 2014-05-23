@@ -17,7 +17,7 @@
 echo
 echo -e "${CVIOLET}Synchronisation d'un dossier distant${CVOID}"
 
-stdinout_readConnexionServerSSH 'syncdir'
+stdin_readConnexionServerSSH 'syncdir'
 
 __PATH_DESTINATION=""
 __FCACHE="/tmp/cache.$USER.path.syncdir"
@@ -27,8 +27,8 @@ read REPONSE
 [ ! -z ${REPONSE} ] && __PATH_DESTINATION=${REPONSE}
 echo "__PATH_DESTINATION=${__PATH_DESTINATION}" >> ${__FCACHE}
 
-filesystem_synchronize "${OLIX_STDINOUT_SERVER_PORT}" \
-                       "${OLIX_STDINOUT_SERVER_USER}@${OLIX_STDINOUT_SERVER_HOST}:${OLIX_STDINOUT_SERVER_PATH}" \
+filesystem_synchronize "${OLIX_STDIN_SERVER_PORT}" \
+                       "${OLIX_STDIN_SERVER_USER}@${OLIX_STDIN_SERVER_HOST}:${OLIX_STDIN_SERVER_PATH}" \
                        "${__PATH_DESTINATION}"
 [[ $? -ne 0 ]] && logger_error
 

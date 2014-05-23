@@ -21,7 +21,7 @@
 ##
 OLIX_RELEASE=false
 OLIX_VERSION="2.0"
-OLIX_REVISION="1"
+OLIX_REVISION="20"
 
 
 
@@ -29,11 +29,12 @@ OLIX_REVISION="1"
 # Détermination où se trouve le framework pour s'y placer
 ##
 if [ -L $0 ]; then
-    FILE_SHELL=$(readlink $0)
+    OLIX_ROOT_SCRIPT=$(readlink $0)
 else
-    FILE_SHELL=$0
+    OLIX_ROOT_SCRIPT=$0
 fi
-cd $(dirname $FILE_SHELL)
+OLIX_ROOT=$(dirname $OLIX_ROOT_SCRIPT)
+cd ${OLIX_ROOT}
 
 
 ###
@@ -42,8 +43,9 @@ cd $(dirname $FILE_SHELL)
 source lib/constant.inc.sh
 source lib/core.inc.sh
 source lib/config.inc.sh
+source lib/module.inc.sh
 source lib/color.inc.sh
-source lib/stdinout.inc.sh
+source lib/stdin.inc.sh
 source lib/stdout.inc.sh
 source lib/logger.inc.sh
 source lib/filesystem.inc.sh
@@ -73,10 +75,10 @@ while [[ $# -ge 1 ]]; do
             OLIX_OPTION_WARNINGS=false
         ;;
         -h|--help)
-            stdinout_printUsage
+            OLIX_OPTION_HELP=true
         ;;
         --version)
-           stdinout_printVersion
+           stdout_printVersion
            core_exit 0
         ;;
         
@@ -93,10 +95,15 @@ done
 
 logger_info "Version : ${OLIX_VERSION}, Revision : ${OLIX_REVISION}, Release : ${OLIX_RELEASE}"
 
+logger_debug "OLIX_MODULE=${OLIX_MODULE}"
+logger_debug "OLIX_ARGS=${OLIX_ARGS}"
 
 
-logger_debug "Module #${OLIX_MODULE}#"
-logger_debug "Args #${OLIX_ARGS}#"
+###
+# Affichage de l'aide
+##
+[[ -z ${OLIX_MODULE} && ${OLIX_OPTION_HELP} == true ]] && stdout_printUsage && core_exit 0
+
 
 ###
 # Installation de OLIXSH
@@ -106,30 +113,25 @@ if [[ "${OLIX_MODULE}" == "install:olixsh" ]]; then
     core_exit 0
 fi
 
+
 ###
-# Congiguration principale
+# Chargement de la configuration principale
 ##
 core_checkInstall
-logger_debug "Charge la configuration de ${OLIX_CONFIG_SERVER}"
-source ${OLIX_CONFIG_SERVER}
+core_loadConfiguration
 
 
-
-
+###
+# Execution du module
+##
 if [[ ! -z ${OLIX_MODULE} ]]; then
-    OLIX_MODULE_SCRIPT="modules/${OLIX_MODULE/:/-}.sh"
-    logger_debug "Script module : ${OLIX_MODULE_SCRIPT}"
-    if [[ -r ${OLIX_MODULE_SCRIPT} ]]; then
-        source ${OLIX_MODULE_SCRIPT}
-        core_exit 0
-    fi
-    logger_debug "Le module ${OLIX_MODULE_SCRIPT} est inexistant"
+    [[ ${OLIX_OPTION_HELP} == true ]] && module_printUsage "${OLIX_MODULE}" && core_exit 0
+    module_execute "${OLIX_MODULE}"
 fi
 
+module_readChoice
+if [[ ! -z ${OLIX_MODULE} ]]; then
+    module_execute "${OLIX_MODULE}"
+fi
 
-stdinout_readChoiceModule
-
-
-
-logger_debug "${OLIX_MODULE}"
 core_exit 0

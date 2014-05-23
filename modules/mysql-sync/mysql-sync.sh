@@ -16,12 +16,12 @@
 echo
 echo -e "${CVIOLET}Synchronisation d'une base de données${CVOID}"
 
-stdinout_readConnexionServerMySQL "syncbase"
+stdin_readConnexionServerMySQL "syncbase"
 
 mysql_printMenuListDataBasesLocal "" true
 
-mysql_synchronizeDatabase "${OLIX_STDINOUT_SERVER_HOST}" "${OLIX_STDINOUT_SERVER_PORT}" \
-    					  "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}" "${OLIX_FONCTION_RESULT}"
+mysql_synchronizeDatabase "${OLIX_STDIN_SERVER_HOST}" "${OLIX_STDIN_SERVER_PORT}" \
+    					  "${OLIX_STDIN_SERVER_USER}" "${OLIX_STDIN_SERVER_BASE}" "${OLIX_FONCTION_RESULT}"
 [[ $? -ne 0 ]] && logger_error "Impossible de synchroniser la base ${OLIX_FONCTION_RESULT}"
 
 

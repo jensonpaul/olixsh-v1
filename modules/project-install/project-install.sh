@@ -63,10 +63,10 @@ echo
 echo -e "${CVIOLET} Copie des fichiers dans ${CCYAN}${OLIX_CONF_PROJECT_PATH}${CVOID}"
 echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
 
-stdinout_readConnexionServerSSH ${OLIX_PROJECT_CODE}
+stdin_readConnexionServerSSH ${OLIX_PROJECT_CODE}
 
-filesystem_synchronize "${OLIX_STDINOUT_SERVER_PORT}" \
-                       "${OLIX_STDINOUT_SERVER_USER}@${OLIX_STDINOUT_SERVER_HOST}:${OLIX_STDINOUT_SERVER_PATH}" \
+filesystem_synchronize "${OLIX_STDIN_SERVER_PORT}" \
+                       "${OLIX_STDIN_SERVER_USER}@${OLIX_STDIN_SERVER_HOST}:${OLIX_STDIN_SERVER_PATH}" \
                        "${OLIX_CONF_PROJECT_PATH}" \
                        "${OLIX_CONF_PROJECT_INSTALL_FILE_EXCLUDE}"
 [[ $? -ne 0 ]] && logger_error
@@ -81,8 +81,8 @@ for I in ${OLIX_CONF_PROJECT_MYSQL_BASE}; do
 	echo -e "${CVIOLET} Installation de la base ${CCYAN}${I}${CVOID}"
 	echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
 
-	OLIX_STDINOUT_SERVER_BASE="${I}"
-	stdinout_readConnexionServerMySQL "${OLIX_PROJECT_CODE}.${I}"
+	OLIX_STDIN_SERVER_BASE="${I}"
+	stdin_readConnexionServerMySQL "${OLIX_PROJECT_CODE}.${I}"
 
     mysql_dropDatabaseLocal "${I}"
     [[ $? -ne 0 ]] && logger_error "Impossible de supprimer la base $I"
@@ -96,8 +96,8 @@ for I in ${OLIX_CONF_PROJECT_MYSQL_BASE}; do
 
     [[ "|${OLIX_CONF_PROJECT_INSTALL_BASE_EXCLUDE// /|}|" =~ "|${I}|" ]] && continue
 
-    mysql_synchronizeDatabase "${OLIX_STDINOUT_SERVER_HOST}" "${OLIX_STDINOUT_SERVER_PORT}" \
-    						  "${OLIX_STDINOUT_SERVER_USER}" "${OLIX_STDINOUT_SERVER_BASE}" "${I}"
+    mysql_synchronizeDatabase "${OLIX_STDIN_SERVER_HOST}" "${OLIX_STDIN_SERVER_PORT}" \
+    						  "${OLIX_STDIN_SERVER_USER}" "${OLIX_STDIN_SERVER_BASE}" "${I}"
     [[ $? -ne 0 ]] && logger_error "Impossible de synchroniser la base $I"
 done
 
