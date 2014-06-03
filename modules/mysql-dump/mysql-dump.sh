@@ -25,11 +25,11 @@ read REPONSE
 [ ! -z ${REPONSE} ] && __PATH_DESTINATION=${REPONSE}
 echo "__PATH_DESTINATION=${__PATH_DESTINATION}" >> ${__FCACHE}
 
-mysql_dumpDatabaseLocal "${OLIX_FONCTION_RESULT}" "${__PATH_DESTINATION}"
+mysql_dumpDatabaseLocal "${OLIX_FUNCTION_RESULT}" "${__PATH_DESTINATION}"
 [[ $? -ne 0 ]] && logger_error "Impossible de faire un dump de la base ${__PATH_DESTINATION}"
 
 
 ###
 # FIN
 ##
-echo -e "${CVERT}Dump de ${CVIOLET}${OLIX_FONCTION_RESULT}${CVERT} terminée${CVOID}"
+echo -e "${CVERT}Dump de ${CVIOLET}${OLIX_FUNCTION_RESULT}${CVERT} terminée${CVOID}"

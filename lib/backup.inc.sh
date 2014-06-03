@@ -21,7 +21,7 @@ function backup_moveArchive()
 
     stdout_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
     return $?
 }
 
@@ -39,7 +39,7 @@ function backup_compress()
     local START=${SECONDS}
 
     case $1 in
-        BZ|bz|BZ2|bz2)  FILE=$(filesystem_compressBZ $2)
+        BZ|bz|BZ2|bz2)  FILE=$(filesystem_compressBZ2 $2)
                         RET=$?
                         ;;
         GZ|gz)          FILE=$(filesystem_compressGZ $2)
@@ -53,7 +53,7 @@ function backup_compress()
     stdout_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
     report_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
 
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
     OLIX_FUNCTION_RESULT=${FILE}
 }
 
@@ -76,7 +76,7 @@ function backup_transfertFTP()
 
     stdout_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
     return $?
 }
 
@@ -93,23 +93,27 @@ function backup_purge()
     logger_debug "backup_purge ($1, $2, $3)"
     local RET
 
-    filesystem_purgeStandard "$1" "$2" "$3" "${LIST_FILE_PURGED}"
-    RET=$?
+    case $3 in
+        LOG|log)    filesystem_purgeLogarithmic "$1" "$2" "${LIST_FILE_PURGED}"
+                    RET=$?;;
+        *)          filesystem_purgeStandard "$1" "$2" "$3" "${LIST_FILE_PURGED}"
+                    RET=$?;;
+    esac
 
     stdout_printInfo "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
     report_printInfo "Purge des anciennes sauvegardes" "$(cat ${LIST_FILE_PURGED} | wc -l)"
     stdout_printFile "${LIST_FILE_PURGED}"
-    report_printFile "${LIST_FILE_PURGED}"
-    [[ ${RET} -ne 0 ]] && logger_error
+    report_printFile "${LIST_FILE_PURGED}" "font-size:0.8em;color:Olive;"
+    [[ ${RET} -ne 0 ]] && report_error && logger_error
 
     stdout_printInfo "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
     report_printInfo "Liste des sauvegardes restantes" "$(find $1 -name "$2" | wc -l)"
-    find $1 -name "$2" -exec basename \{\} \; > ${LIST_FILE_PURGED}
+    find $1 -name "$2" -printf "%f\n" |sort > ${LIST_FILE_PURGED}
     RET=$?
     stdout_printFile "${LIST_FILE_PURGED}"
-    report_printFile "${LIST_FILE_PURGED}"
+    report_printFile "${LIST_FILE_PURGED}" "font-size:0.8em;color:SteelBlue;"
 
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
     rm -f ${LIST_FILE_PURGED}
 }
 
@@ -128,7 +132,7 @@ function backup_baseMySQL()
     mysql_dumpDatabaseLocal "${I}" "${DUMP}"
     stdout_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
     report_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${DUMP}"
     DUMP=${OLIX_FUNCTION_RESULT}
@@ -159,7 +163,7 @@ function backup_directory()
     filesystem_makeArchive "$1" "${FILEBCK}" "$3"
     stdout_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
     report_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${FILEBCK}"
     FILEBCK=${OLIX_FUNCTION_RESULT}

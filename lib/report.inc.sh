@@ -7,9 +7,9 @@
 ##
 
 
+OLIX_REPORT_FORMAT="text"
 OLIX_REPORT_FILENAME=""
 OLIX_REPORT_EMAIL=""
-
 
 
 
@@ -32,6 +32,7 @@ function report_initialize()
 					return;;
 	esac
 
+	OLIX_REPORT_FORMAT=$1
 	OLIX_REPORT_EMAIL=$3
 
 	echo > ${OLIX_REPORT_FILENAME}
@@ -41,20 +42,29 @@ function report_initialize()
 
 ###
 # Finalise le rapport et l'envoi pas mail le cas échéant
-# @param $1 : Sujet du mail
+# @param $1 : Format du rapport
+# @param $2 : Sujet du mail
 ##
 function report_terminate()
 {
-	logger_debug "report_terminate ($1)"
+	logger_debug "report_terminate ($1, $2)"
 
 	report_printFooter
 
 	if [[ ! -z ${OLIX_REPORT_EMAIL} ]]; then
-		core_sendMail "text" "${OLIX_REPORT_EMAIL}" "${OLIX_REPORT_FILENAME}" "$1"
+		core_sendMail "$1" "${OLIX_REPORT_EMAIL}" "${OLIX_REPORT_FILENAME}" "$2"
 		[[ $? -ne 0 ]] && logger_warning "Impossible d'envoyer l'email à ${OLIX_REPORT_EMAIL}"
 	fi
 }
 
+
+function report_error()
+{
+	[[ -n $1 ]] && report_print "$1" "color:red;"
+	[[ -s ${OLIX_LOGGER_FILE_ERR} ]] && report_printFile "${OLIX_LOGGER_FILE_ERR}" "color:red;"
+	report_terminate "${OLIX_REPORT_FORMAT}" "ERREUR"
+    return 0
+}
 
 
 function report_printHead1() { echo > /dev/null; }

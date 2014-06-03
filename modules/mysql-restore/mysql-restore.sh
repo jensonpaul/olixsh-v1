@@ -25,11 +25,11 @@ echo "__PATH_DUMP=${__PATH_DUMP}" >> ${__FCACHE}
 
 mysql_printMenuListDataBasesLocal "" true
 
-mysql_restoreDatabaseLocal "${__PATH_DUMP}" "${OLIX_FONCTION_RESULT}"
+mysql_restoreDatabaseLocal "${__PATH_DUMP}" "${OLIX_FUNCTION_RESULT}"
 [[ $? -ne 0 ]] && logger_error "Impossible de faire un dump de la base ${__PATH_DESTINATION}"
 
 
 ###
 # FIN
 ##
-echo -e "${CVERT}Restauration de ${CVIOLET}${OLIX_FONCTION_RESULT}${CVERT} terminée${CVOID}"
+echo -e "${CVERT}Restauration de ${CVIOLET}${OLIX_FUNCTION_RESULT}${CVERT} terminée${CVOID}"

@@ -21,11 +21,11 @@ stdin_readConnexionServerMySQL "syncbase"
 mysql_printMenuListDataBasesLocal "" true
 
 mysql_synchronizeDatabase "${OLIX_STDIN_SERVER_HOST}" "${OLIX_STDIN_SERVER_PORT}" \
-    					  "${OLIX_STDIN_SERVER_USER}" "${OLIX_STDIN_SERVER_BASE}" "${OLIX_FONCTION_RESULT}"
-[[ $? -ne 0 ]] && logger_error "Impossible de synchroniser la base ${OLIX_FONCTION_RESULT}"
+    					  "${OLIX_STDIN_SERVER_USER}" "${OLIX_STDIN_SERVER_BASE}" "${OLIX_FUNCTION_RESULT}"
+[[ $? -ne 0 ]] && logger_error "Impossible de synchroniser la base ${OLIX_FUNCTION_RESULT}"
 
 
 ###
 # FIN
 ##
-echo -e "${CVERT}Synchronisation vers ${CVIOLET}${OLIX_FONCTION_RESULT}${CVERT} terminée${CVOID}"
+echo -e "${CVERT}Synchronisation vers ${CVIOLET}${OLIX_FUNCTION_RESULT}${CVERT} terminée${CVOID}"

@@ -74,7 +74,7 @@ function mysql_getListDatabasesLocal()
 # @param $4 : Mot de passe
 # @param $5 : Base par défaut
 # @param $6 : Possibilité de créer une nouvelle base
-# @return $OLIX_FONCTION_RESULT : Nom de la base
+# @return $OLIX_FUNCTION_RESULT : Nom de la base
 ##
 function mysql_printMenuListDataBases()
 {
@@ -95,12 +95,12 @@ function mysql_printMenuListDataBases()
         [[ "|${LIST_BASE// /|}|" =~ "|${BASE}|" ]] && break
         [[ "${BASE}" == "nouveau" ]] && break
     done
-    OLIX_FONCTION_RESULT=${BASE}
+    OLIX_FUNCTION_RESULT=${BASE}
     # Si nouveau, on crée la base
     if [[ "${BASE}" == "nouveau" ]]; then
         echo -en "${Cjaune}Nom de la base à créer ? ${CVOID}"
         read BASE
-        OLIX_FONCTION_RESULT=${BASE}
+        OLIX_FUNCTION_RESULT=${BASE}
         mysql_createDatabase $1 $2 $3 $4 ${BASE}
         [[ $? -ne 0 ]] && return 1
     fi
@@ -112,7 +112,7 @@ function mysql_printMenuListDataBases()
 # Affiche le menu du choix de la base de données locale
 # @param $1 : Base par défaut
 # @param $2 : Possibilité de créer une nouvelle base
-# @return $OLIX_FONCTION_RESULT : Nom de la base
+# @return $OLIX_FUNCTION_RESULT : Nom de la base
 ##
 function mysql_printMenuListDataBasesLocal()
 {

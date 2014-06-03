@@ -21,12 +21,12 @@ function ftp_isInstalled()
 
 ###
 # Transfert d'un fichier sur un serveur FTP
-# $1 : Type de FTP
-# $2 : Host du serveur FTP
-# $3 : Utilisateur du serveur FTP
-# $4 : Mot de passe du serveur FTP
-# $5 : Dossier de dépôt du serveur FTP
-# $6 : Nom du fichier à transferer
+# @param $1 : Type de FTP
+# @param $2 : Host du serveur FTP
+# @param $3 : Utilisateur du serveur FTP
+# @param $4 : Mot de passe du serveur FTP
+# @param $5 : Dossier de dépôt du serveur FTP
+# @param $6 : Nom du fichier à transferer
 ##
 function ftp_put()
 {
@@ -42,11 +42,11 @@ function ftp_put()
 
 ###
 # Transfert d'un fichier sur un serveur FTP par LFTP
-# $1 : Host du serveur FTP
-# $2 : Utilisateur du serveur FTP
-# $3 : Mot de passe du serveur FTP
-# $4 : Dossier de dépôt du serveur FTP
-# $5 : Nom du fichier à transferer
+# @param $1 : Host du serveur FTP
+# @param $2 : Utilisateur du serveur FTP
+# @param $3 : Mot de passe du serveur FTP
+# @param $4 : Dossier de dépôt du serveur FTP
+# @param $5 : Nom du fichier à transferer
 ##
 function ftp_putLFTP()
 {
@@ -58,11 +58,11 @@ function ftp_putLFTP()
 
 ###
 # Transfert d'un fichier sur un serveur FTP par NCFTP
-# $1 : Host du serveur FTP
-# $2 : Utilisateur du serveur FTP
-# $3 : Mot de passe du serveur FTP
-# $4 : Dossier de dépôt du serveur FTP
-# $5 : Nom du fichier à transferer
+# @param $1 : Host du serveur FTP
+# @param $2 : Utilisateur du serveur FTP
+# @param $3 : Mot de passe du serveur FTP
+# @param $4 : Dossier de dépôt du serveur FTP
+# @param $5 : Nom du fichier à transferer
 ##
 function ftp_putNCFTP()
 {
@@ -74,12 +74,12 @@ function ftp_putNCFTP()
 
 ###
 # Synchronisation par mirroir d'un serveur FTP depuis le dépot local
-# $1 : Type de FTP
-# $2 : Host du serveur FTP
-# $3 : Utilisateur du serveur FTP
-# $4 : Mot de passe du serveur FTP
-# $5 : Dossier de dépôt du serveur FTP
-# $6 : Dossier local
+# @param $1 : Type de FTP
+# @param $2 : Host du serveur FTP
+# @param $3 : Utilisateur du serveur FTP
+# @param $4 : Mot de passe du serveur FTP
+# @param $5 : Dossier de dépôt du serveur FTP
+# @param $6 : Dossier local
 ##
 function ftp_synchronize()
 {
@@ -95,27 +95,31 @@ function ftp_synchronize()
 
 ###
 # Synchronisation par mirroir d'un serveur FTP depuis le dépot local par LFTP
-# $1 : Host du serveur FTP
-# $2 : Utilisateur du serveur FTP
-# $3 : Mot de passe du serveur FTP
-# $4 : Dossier de dépôt du serveur FTP
-# $5 : Dossier local
+# @param $1 : Host du serveur FTP
+# @param $2 : Utilisateur du serveur FTP
+# @param $3 : Mot de passe du serveur FTP
+# @param $4 : Dossier de dépôt du serveur FTP
+# @param $5 : Dossier local
+# @return OLIX_FUNCTION_RESULT : Sortie du traitement
 ##
 function ftp_synchronizeLFTP()
 {
 	logger_debug "ftp_synchronizeLFTP ($1, $2, $3, $4, $5)"
-	lftp ftp://$2:$3@$1 -e "mirror -e --only-missing -v -R $5 $4; quit" > /dev/null 2>> ${OLIX_LOGGER_FILE_ERR}
+	local STDOUT=$(core_makeTemp)
+	OLIX_FUNCTION_RESULT=${STDOUT}
+	lftp ftp://$2:$3@$1 -e "mirror -e --only-missing -v -R $5 $4; quit" 2>> ${OLIX_LOGGER_FILE_ERR} | tee ${STDOUT}
 	return $?
 }
 
 
 ###
 # Synchronisation par mirroir d'un serveur FTP depuis le dépot local par NCFTP
-# $1 : Host du serveur FTP
-# $2 : Utilisateur du serveur FTP
-# $3 : Mot de passe du serveur FTP
-# $4 : Dossier de dépôt du serveur FTP
-# $5 : Nom du fichier à transferer
+# @param $1 : Host du serveur FTP
+# @param $2 : Utilisateur du serveur FTP
+# @param $3 : Mot de passe du serveur FTP
+# @param $4 : Dossier de dépôt du serveur FTP
+# @param $5 : Nom du fichier à transferer
+# @return OLIX_FUNCTION_RESULT : Sortie du traitement
 ##
 function ftp_synchronizeNCFTP()
 {
@@ -123,11 +127,13 @@ function ftp_synchronizeNCFTP()
 
 	local LISTFTP=$(ncftpls -l -u $2 -p $3 ftp://$1$4)
     local LISTLOCAL=$(ls $5)
+    local STDOUT=$(core_makeTemp)
+	OLIX_FUNCTION_RESULT=${STDOUT}
 
     # Ajoute les fichiers manquants sur le serveur FTP
     for J in ${LISTLOCAL}; do
     	if ! echo "${LISTFTP}" | grep "$J" > /dev/null; then
-    		#logger_info "Transfert du fichier $J"
+    		echo "Transfert du fichier $J" | tee -a ${STDOUT}
     		ncftpput -C -u $2 -p $3 $1 $5/$J .$4/$J > /dev/null 2>> ${OLIX_LOGGER_FILE_ERR}
         fi
     done
@@ -136,7 +142,7 @@ function ftp_synchronizeNCFTP()
     while IFS='\n' read LINE; do
     	J=$(echo ${LINE} | awk '{print $9}')
     	if ! echo ${LISTLOCAL} | grep "$J" > /dev/null; then
-    		#logger_info "Suppression de l'ancien fichier $J"
+    		echo "Suppression de l'ancien fichier $J" | tee -a ${STDOUT}
     		ncftp -u $2 -p $3 ftp://$1 > /dev/null 2>> ${OLIX_LOGGER_FILE_ERR} <<EOF
                 delete $4/$J
                 bye

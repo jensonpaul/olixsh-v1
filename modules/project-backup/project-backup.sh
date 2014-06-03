@@ -125,10 +125,12 @@ if [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]]; then
 	ftp_synchronize "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" \
 		"${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
         "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
-    
+
     stdout_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
-	[[ $? -ne 0 ]] && logger_error
+    [[ $? -ne 0 ]] && report_error && logger_error
+
+    report_printFile "${OLIX_FUNCTION_RESULT}" "font-size:0.8em;"
 fi
 
 
@@ -142,4 +144,4 @@ report_print
 report_printLine
 report_print "Sauvegarde terminée en $(core_getTimeExec) secondes"
 
-report_terminate "Rapport de backup du projet ${OLIX_PROJECT_CODE}"
+report_terminate "${OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE}" "Rapport de backup du projet ${OLIX_PROJECT_CODE}"
