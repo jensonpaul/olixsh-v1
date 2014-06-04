@@ -82,6 +82,7 @@ function install_linkNodeConfiguration()
     ln -sf $1 $2 > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error
     [[ ! -z $3 ]] && echo -e "$3 : ${CVERT}OK ...${CVOID}"
+    return 0
 }
 
 
@@ -98,6 +99,7 @@ function install_CopyConfiguration()
     cp $1 $2 > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error
     [[ ! -z $3 ]] && echo -e "$3 : ${CVERT}OK ...${CVOID}"
+    return 0
 }
 
 

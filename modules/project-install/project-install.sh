@@ -133,11 +133,19 @@ __FILE_CONF=$(project_getFileConf "${OLIX_PROJECT_PATH_CONFIG}/vhost" ".conf")
 if [[ -z ${__FILE_CONF} ]]; then
 	logger_warning "Pas de configuration trouvée pour le Virtual Host"
 else
+	# VHOST
 	install_linkNodeConfiguration "${__FILE_CONF}" "/etc/apache2/sites-available/${OLIX_PROJECT_CODE}"
 	logger_debug "Activation du site ${OLIX_PROJECT_CODE}"
 	a2ensite ${OLIX_PROJECT_CODE} > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	[[ $? -ne 0 ]] && logger_error
 	echo -e "Activation du site ${CCYAN}$(basename $__FILE_CONF)${CVOID} : ${CVERT}OK ...${CVOID}"
+
+	# CERTS
+	for I in $(find ${OLIX_PROJECT_PATH_CONFIG} -name "*.crt"); do
+		install_linkNodeConfiguration "$I" "/etc/ssl/certs/"
+		[[ $? -ne 0 ]] && logger_error
+		echo -e "Installation du certificat ${CCYAN}$(basename $I)${CVOID} : ${CVERT}OK ...${CVOID}"
+	done
 
 	logger_debug "Redémarrage du Apache"
 	service apache2 reload
