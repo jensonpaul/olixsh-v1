@@ -109,8 +109,7 @@ logger_debug "OLIX_ARGS=${OLIX_ARGS}"
 # Installation de OLIXSH
 ##
 if [[ "${OLIX_MODULE}" == "install:olixsh" ]]; then
-    source modules/install-olixsh.sh
-    core_exit 0
+    module_execute "install:olixsh"
 fi
 
 

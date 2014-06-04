@@ -81,9 +81,6 @@ for I in ${OLIX_CONF_PROJECT_MYSQL_BASE}; do
 	echo -e "${CVIOLET} Installation de la base ${CCYAN}${I}${CVOID}"
 	echo -e "${CBLANC}-------------------------------------------------------------------------------${CVOID}"
 
-	OLIX_STDIN_SERVER_BASE="${I}"
-	stdin_readConnexionServerMySQL "${OLIX_PROJECT_CODE}.${I}"
-
     mysql_dropDatabaseLocal "${I}"
     [[ $? -ne 0 ]] && logger_error "Impossible de supprimer la base $I"
 
@@ -95,6 +92,9 @@ for I in ${OLIX_CONF_PROJECT_MYSQL_BASE}; do
     echo -e "Création de la base : ${CVERT}OK ...${CVOID}"
 
     [[ "|${OLIX_CONF_PROJECT_INSTALL_BASE_EXCLUDE// /|}|" =~ "|${I}|" ]] && continue
+
+    OLIX_STDIN_SERVER_BASE="${I}"
+	stdin_readConnexionServerMySQL "${OLIX_PROJECT_CODE}.${I}"
 
     mysql_synchronizeDatabase "${OLIX_STDIN_SERVER_HOST}" "${OLIX_STDIN_SERVER_PORT}" \
     						  "${OLIX_STDIN_SERVER_USER}" "${OLIX_STDIN_SERVER_BASE}" "${I}"

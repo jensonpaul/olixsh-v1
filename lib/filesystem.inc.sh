@@ -16,9 +16,11 @@ function filesystem_createFileExclude()
 {
 	logger_debug "filesystem_createFileExclude($1, $2)"
 	echo "" > $1
+    IFS='|'
 	for I in $2; do
 		echo $I >> $1
 	done
+    IFS=' '
 	sed -i "s/\\\//g" $1
 }
 

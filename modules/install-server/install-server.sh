@@ -20,7 +20,6 @@ source lib/install.inc.sh
 ###
 # Il faut être root
 ##
-logger_debug "Test si root"
 core_checkIfRoot
 [ $? -ne 0 ] && logger_error "Seulement root peut executer l'installation d'oliXsh"
 
