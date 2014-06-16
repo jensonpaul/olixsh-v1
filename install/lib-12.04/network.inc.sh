@@ -79,7 +79,7 @@ if [[ "${REPONSE}" == "o" ]]; then
         echo "iface eth0 inet static" >> /etc/network/interfaces
         echo "	address ${OLIX_INSTALL_NETWORK_ADDRIP}" >> /etc/network/interfaces
         echo "	netmask ${OLIX_INSTALL_NETWORK_NETMASK}" >> /etc/network/interfaces
-        echo "	network ${OLIX_INSTALL_ETWORK_NETWORK}" >> /etc/network/interfaces
+        echo "	network ${OLIX_INSTALL_NETWORK_NETWORK}" >> /etc/network/interfaces
         echo "	broadcast ${OLIX_INSTALL_NETWORK_BROADCAST}" >> /etc/network/interfaces
         echo "	gateway ${OLIX_INSTALL_NETWORK_GATEWAY}" >> /etc/network/interfaces
         echo "  dns-nameservers ${OLIX_INSTALL_NETWORK_RESOLV}" >> /etc/network/interfaces
