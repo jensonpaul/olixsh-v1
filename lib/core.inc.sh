@@ -46,6 +46,17 @@ function core_checkIfRoot()
 
 
 ###
+# Vérifie que ce soit l'utilisateur concerné qui puisse exécuter le script
+##
+function core_checkIfUser()
+{
+    logger_debug "core_checkIfUser ()"
+    [[ ${LOGNAME} != ${OLIX_USER} ]] && logger_error "Seul l'utilisateur \"${SAPSAS_USER}\" peut exécuter ce script"
+    return 0
+}
+
+
+###
 # Vérifie si l'installation de oliXsh est complète
 ##
 function core_checkInstall()

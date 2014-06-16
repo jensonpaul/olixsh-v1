@@ -36,6 +36,7 @@ function module_execute()
         core_exit 0
     fi
     logger_warning "Le module ${SCRIPT} est inexistant"
+    core_exit 1
 }
 
 

@@ -50,7 +50,7 @@ function stdout_printUsage()
     [[ ! -z $1 ]] && MODULE=$1
     stdout_printVersion
     echo
-    echo -e "${CBLANC} Usage : ${CBLEU}olixsh ${Ccyan}[OPTIONS] ${CJAUNE}${MODULE} ${Cviolet}[PARAMETER]${CVOID}"
+    echo -e "${CBLANC} Usage : ${CBLEU}$(basename ${OLIX_ROOT_SCRIPT}) ${Ccyan}[OPTIONS] ${CJAUNE}${MODULE} ${Cviolet}[PARAMETER]${CVOID}"
     [[ ! -z $2 ]] && echo && echo -e "$2"
     echo
     echo -e "${Ccyan}OPTIONS${CVOID}"
