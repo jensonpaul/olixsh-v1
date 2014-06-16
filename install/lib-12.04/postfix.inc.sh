@@ -6,8 +6,8 @@
 # - Modification du hostname
 # ------------------------------------------------------------------------------
 # OLIX_INSTALL_POSTFIX         : true pour l'installation
-# OLIX_INSTALL_POSTFIX_APT     : Paquet à installer postfix ou sendmail
-# POSTFIX_HOSTNAME : Hostname à utiliser pour la configuration postfix
+# OLIX_INSTALL_POSTFIX_RELAY   : Relai SMTP
+# OLIX_INSTALL_POSTFIX_AUTH    : Authentification Login:Password
 # ------------------------------------------------------------------------------
 # @package olixsh
 # @author Olivier
@@ -34,7 +34,7 @@ __PATH_CONFIG="${OLIX_INSTALL_PATH_CONFIG}/postfix"
 # Installation
 ##
 logger_debug "Installation des packages Postfix"
-apt-get --yes install mailutils ${OLIX_INSTALL_POSTFIX_APT}
+apt-get --yes install mailutils postfix libsasl2-modules sasl2-bin
 
 
 
@@ -44,18 +44,28 @@ apt-get --yes install mailutils ${OLIX_INSTALL_POSTFIX_APT}
 echo -e "Configurer en mode ${CCYAN}Internet avec un smarthost${CVOID}"; sleep 3
 dpkg-reconfigure postfix
 
+logger_debug "Changement du relay =  ${OLIX_INSTALL_POSTFIX_RELAY}"
+postconf -e "relayhost = ${OLIX_INSTALL_POSTFIX_RELAY}"
+
 
 ###
-# Modification du hostname
+# Modification de la conf en mode authentification
 ##
-#echo -en "Modification du hostname ${CCYAN}${POSTFIX_HOSTNAME}${CVOID} : "; sleep 1
-#sed -i "s/^myhostname = .*$/myhostname = ${POSTFIX_HOSTNAME}/g" /etc/postfix/main.cf > ${OLIX_ERROR_FILE} 2>&1
-#if [ $? -ne 0 ]; then core_handlerError; fi
-#echo -e "${CVERT}OK ...${CVOID}"
-##echo "mydestination = spiderman, localhost.localdomain, localhost"
-##echo "mynetworks = 127.0.0.0/8"
-##echo "inet_interfaces = loopback-only"
-#echo "-------------------------------------------------------------------------------"
+if [[ ! -z ${OLIX_INSTALL_POSTFIX_AUTH} ]]; then
+	logger_debug "Modification de la conf postfix"
+	postconf -e 'smtpd_sasl_auth_enable = no'
+	postconf -e 'smtp_sasl_auth_enable = yes'
+	postconf -e 'smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd'
+	postconf -e 'smtpd_sasl_local_domain = $myhostname'
+	postconf -e 'smtp_sasl_security_options = noanonymous'
+	postconf -e 'smtp_sasl_tls_security_options = noanonymous'
+	logger_debug "Création du fichier d'authentification sasl_passwd"
+	echo "${OLIX_INSTALL_POSTFIX_RELAY}    ${OLIX_INSTALL_POSTFIX_AUTH}" > /etc/postfix/sasl_passwd
+	postmap /etc/postfix/sasl_passwd > ${OLIX_LOGGER_FILE_ERR} 2>&1
+	[[ $? -ne 0 ]] && logger_error
+	rm -f /etc/postfix/sasl_passwd
+	echo -e "Authentification sur ${CCYAN}${OLIX_INSTALL_POSTFIX_RELAY}${CVOID} : ${CVERT}OK ...${CVOID}"
+fi
 
 
 ###
