@@ -73,8 +73,10 @@ done
 logger_debug "Suppression de la conf actuelle"
 rm -rf /etc/apache2/conf-enabled/* > ${OLIX_LOGGER_FILE_ERR} 2>&1
 [[ $? -ne 0 ]] && logger_error
+for I in $(ls ${__PATH_CONFIG}/conf/olix*); do
+	install_linkNodeConfiguration "$I" "/etc/apache2/conf-available/"
+done
 for I in ${OLIX_INSTALL_APACHE_CONFIGS}; do
-	install_linkNodeConfiguration "${__PATH_CONFIG}/conf/$I.conf" "/etc/apache2/conf-available/"
 	logger_debug "Activation de la conf $I"
 	a2enconf $I > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	[[ $? -ne 0 ]] && logger_error

@@ -151,7 +151,7 @@ if [[ -z ${__FILE_CONF} ]]; then
 	logger_warning "Pas de configuration trouvée pour le Virtual Host"
 else
 	# VHOST
-	install_linkNodeConfiguration "${__FILE_CONF}" "/etc/apache2/sites-available/${OLIX_PROJECT_CODE}"
+	install_linkNodeConfiguration "${__FILE_CONF}" "/etc/apache2/sites-available/${OLIX_PROJECT_CODE}.conf"
 	logger_debug "Activation du site ${OLIX_PROJECT_CODE}"
 	a2ensite ${OLIX_PROJECT_CODE} > ${OLIX_LOGGER_FILE_ERR} 2>&1
 	[[ $? -ne 0 ]] && logger_error
