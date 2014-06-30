@@ -12,11 +12,11 @@
 ##
 
 # Nom du fichier de l'interpréteur
-OLIX_SHELL_NAME="olixsh2"
+OLIX_SHELL_NAME="olixsh"
 # Lien vers l'interpréteur olixsh
-OLIX_SHELL_LINK="/bin/olixsh2"
+OLIX_SHELL_LINK="/bin/olixsh"
 # Fichier de config systeme contenant les informations sur l'emplacement de la configuration
-OLIX_CONFIG_FILE="/etc/olix2"
+OLIX_CONFIG_FILE="/etc/olix"
 
 
 
