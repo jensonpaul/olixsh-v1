@@ -6,16 +6,16 @@
 # - Activation des modules
 # - Installation des fichiers de configuration
 # ------------------------------------------------------------------------------
-# OLIX_INSTALL_APACHE         : true pour l'installation
-# OLIX_INSTALL_APACHE_SSL_KEY : Clé privé du serveur
-# OLIX_INSTALL_APACHE_MODULES : Liste des modules apache à activer
-# OLIX_INSTALL_APACHE_CONFIGS : Liste des fichiers de configuration
+# OLIX_INSTALL_APACHE               : true pour l'installation
+# OLIX_INSTALL_APACHE_SSL_KEY       : Clé privé du serveur
+# OLIX_INSTALL_APACHE_MODULES       : Liste des modules apache à activer
+# OLIX_INSTALL_APACHE_CONFIGS       : Liste des fichiers de configuration
+# OLIX_INSTALL_APACHE_VHOST_DEFAULT : Site par défaut
 # ------------------------------------------------------------------------------
 # @modified 09/05/2014
 # Ajout des variables OLIX_INSTALL_APACHE_SSL_KEY et OLIX_INSTALL_APACHE_CONFIGS
 # Suppression des variables OLIX_INSTALL_APACHE_VHOST et OLIX_INSTALL_APACHE_FILECFG
 # Installation de la clé privée
-# Suppression du site par défaut
 # ------------------------------------------------------------------------------
 # @package olixsh
 # @author Olivier
@@ -73,6 +73,8 @@ done
 logger_debug "Suppression de la conf actuelle"
 rm -rf /etc/apache2/conf-enabled/* > ${OLIX_LOGGER_FILE_ERR} 2>&1
 [[ $? -ne 0 ]] && logger_error
+rm -rf /etc/apache2/conf-available/olix* > ${OLIX_LOGGER_FILE_ERR} 2>&1
+[[ $? -ne 0 ]] && logger_error
 for I in $(ls ${__PATH_CONFIG}/conf/olix*); do
 	install_linkNodeConfiguration "$I" "/etc/apache2/conf-available/"
 done
@@ -82,6 +84,23 @@ for I in ${OLIX_INSTALL_APACHE_CONFIGS}; do
 	[[ $? -ne 0 ]] && logger_error
 	echo -e "Activation de la conf ${CCYAN}$I${CVOID} : ${CVERT}OK ...${CVOID}"
 done
+
+
+###
+# Activation du site par défaut
+##
+install_backupFileOriginal "/etc/apache2/sites-available/000-default.conf"
+
+logger_debug "Effacement de /etc/apache2/sites-enabled/000-default.conf"
+rm -rf /etc/apache2/sites-enabled/000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
+[[ $? -ne 0 ]] && logger_error
+
+install_linkNodeConfiguration "${__PATH_CONFIG}/default/${OLIX_INSTALL_APACHE_VHOST_DEFAULT}" "/etc/apache2/sites-available/000-default.conf"
+
+logger_debug "Activation du site 000-default.conf"
+a2ensite 000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
+[[ $? -ne 0 ]] && logger_error
+echo -e "Activation du site ${CCYAN}default.conf${CVOID} : ${CVERT}OK ...${CVOID}"
 
 
 ###
