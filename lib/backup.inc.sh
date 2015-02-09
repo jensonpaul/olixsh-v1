@@ -21,8 +21,8 @@ function backup_moveArchive()
 
     stdout_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Déplacement vers le dossier de backup" "" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && report_error && logger_error
-    return $?
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
+    return 0
 }
 
 
@@ -53,8 +53,9 @@ function backup_compress()
     stdout_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
     report_printMessageReturn ${RET} "Compression du fichier" "$(stdout_getSizeFileHuman ${FILE})" "$((SECONDS-START))"
 
-    [[ $? -ne 0 ]] && report_error && logger_error
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
     OLIX_FUNCTION_RESULT=${FILE}
+    return 0
 }
 
 
@@ -76,8 +77,8 @@ function backup_transfertFTP()
 
     stdout_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Transfert vers le serveur de backup" "" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && report_error && logger_error
-    return $?
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
+    return 0
 }
 
 
@@ -113,8 +114,9 @@ function backup_purge()
     stdout_printFile "${LIST_FILE_PURGED}"
     report_printFile "${LIST_FILE_PURGED}" "font-size:0.8em;color:SteelBlue;"
 
-    [[ $? -ne 0 ]] && report_error && logger_error
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
     rm -f ${LIST_FILE_PURGED}
+    return 0
 }
 
 
@@ -132,18 +134,26 @@ function backup_baseMySQL()
     mysql_dumpDatabaseLocal "${I}" "${DUMP}"
     stdout_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
     report_printMessageReturn $? "Sauvegarde de la base" "$(stdout_getSizeFileHuman ${DUMP})" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && report_error && logger_error
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${DUMP}"
+    [[ $? -ne 0 ]] && return 1
     DUMP=${OLIX_FUNCTION_RESULT}
         
-    [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]] && backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
-        "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
-        "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${DUMP}"
+    if [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]]; then
+        backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
+            "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
+            "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${DUMP}"
+        [[ $? -ne 0 ]] && return 1
+    fi
 
     backup_moveArchive "${DUMP}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
+    [[ $? -ne 0 ]] && return 1
 
     backup_purge "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}" "dump-$I-*" "${OLIX_CONF_PROJECT_BACKUP_PURGE}"
+    [[ $? -ne 0 ]] && return 1
+
+    return 0
 }
 
 
@@ -163,16 +173,24 @@ function backup_directory()
     filesystem_makeArchive "$1" "${FILEBCK}" "$3"
     stdout_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
     report_printMessageReturn $? "Archivage du dossier" "$(stdout_getSizeFileHuman ${FILEBCK})" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && report_error && logger_error
+    [[ $? -ne 0 ]] && report_warning && logger_warning && return 1
 
     backup_compress "${OLIX_CONF_PROJECT_BACKUP_COMPRESS}" "${FILEBCK}"
+    [[ $? -ne 0 ]] && return 1
     FILEBCK=${OLIX_FUNCTION_RESULT}
     
-    [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]] && backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
-        "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
-        "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${FILEBCK}"
+    if [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]]; then
+        backup_transfertFTP "${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC}" \
+            "${OLIX_CONF_PROJECT_BACKUP_FTP_HOST}" "${OLIX_CONF_PROJECT_BACKUP_FTP_USER}" "${OLIX_CONF_PROJECT_BACKUP_FTP_PASS}" \
+            "${OLIX_CONF_PROJECT_BACKUP_FTP_PATH}" "${FILEBCK}"
+        [[ $? -ne 0 ]] && return 1
+    fi
 
     backup_moveArchive "${FILEBCK}" "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}"
+    [[ $? -ne 0 ]] && return 1
 
     backup_purge "${OLIX_CONF_PROJECT_BACKUP_REPOSITORY}" "backup-$2-*" "${OLIX_CONF_PROJECT_BACKUP_PURGE}"
+    [[ $? -ne 0 ]] && return 1
+
+    return 0
 }

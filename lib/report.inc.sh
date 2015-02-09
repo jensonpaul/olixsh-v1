@@ -58,11 +58,27 @@ function report_terminate()
 }
 
 
+###
+# Rapport d'erreur
+# @param $1 : Message d'erreur
+##
 function report_error()
 {
 	[[ -n $1 ]] && report_print "$1" "color:red;"
 	[[ -s ${OLIX_LOGGER_FILE_ERR} ]] && report_printFile "${OLIX_LOGGER_FILE_ERR}" "color:red;"
 	report_terminate "${OLIX_REPORT_FORMAT}" "ERREUR"
+    return 0
+}
+
+
+###
+# Rapport d'avertissement
+# @param $1 : Message d'avertissement
+##
+function report_warning()
+{
+	[[ -n $1 ]] && report_print "$1" "color:red;"
+	[[ -s ${OLIX_LOGGER_FILE_ERR} ]] && report_printFile "${OLIX_LOGGER_FILE_ERR}" "color:red;"
     return 0
 }
 

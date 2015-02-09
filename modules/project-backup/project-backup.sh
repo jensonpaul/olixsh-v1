@@ -69,6 +69,11 @@ stdout_printHead1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "
 report_printHead1 "Sauvegarde du projet %s le %s à %s" "${OLIX_PROJECT_CODE}" "${OLIX_SYSTEM_DATE}" "${OLIX_SYSTEM_TIME}"
 
 
+###
+# Si error lors du traitement
+##
+_PB_IS_ERROR=0
+
 
 ###
 # Sauvegarde des bases de données
@@ -88,6 +93,7 @@ for I in ${_PB_LIST_BASE}; do
 	report_printHead2 "Dump de la base %s" "${I}"
 
     backup_baseMySQL ${I}
+    [[ $? -ne 0 ]] && _PB_IS_ERROR=1
 
 done
 
@@ -99,6 +105,7 @@ stdout_printHead2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
 report_printHead2 "Sauvegarde du dossier projet %s" "${OLIX_CONF_PROJECT_PATH}"
 
 backup_directory "${OLIX_CONF_PROJECT_PATH}" "${OLIX_PROJECT_CODE}" "${OLIX_CONF_PROJECT_BACKUP_FILE_EXCLUDE}"
+[[ $? -ne 0 ]] && _PB_IS_ERROR=1
 
 
 ###
@@ -110,6 +117,7 @@ for I in ${OLIX_CONF_PROJECT_BACKUP_PATH_EXTRA}; do
 	report_printHead2 "Sauvegarde du dossier projet %s" "${I}"
 
 	backup_directory "${I}" "${I//\//_}"
+    [[ $? -ne 0 ]] && _PB_IS_ERROR=1
 
 done
 
@@ -128,7 +136,7 @@ if [[ ${OLIX_CONF_PROJECT_BACKUP_FTP_SYNC} != false ]]; then
 
     stdout_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
     report_printMessageReturn $? "Synchronisation avec le serveur FTP" "" "$((SECONDS-START))"
-    [[ $? -ne 0 ]] && report_error && logger_error
+    [[ $? -ne 0 ]] && report_warning && logger_warning && _PB_IS_ERROR=1
 
     report_printFile "${OLIX_FUNCTION_RESULT}" "font-size:0.8em;"
 fi
@@ -144,4 +152,8 @@ report_print
 report_printLine
 report_print "Sauvegarde terminée en $(core_getTimeExec) secondes"
 
-report_terminate "${OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE}" "Rapport de backup du projet ${OLIX_PROJECT_CODE}"
+if [[ $_PB_IS_ERROR -eq 1 ]]; then
+    report_terminate "${OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE}" "ERREUR - Rapport de backup du projet ${OLIX_PROJECT_CODE}"
+else
+    report_terminate "${OLIX_CONF_PROJECT_BACKUP_REPORT_TYPE}" "Rapport de backup du projet ${OLIX_PROJECT_CODE}"
+fi
