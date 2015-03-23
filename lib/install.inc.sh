@@ -78,6 +78,11 @@ function install_printChoicePackage()
 function install_linkNodeConfiguration()
 {
     logger_debug "install_linkNodeConfiguration ($1, $2, $3)"
+    # Si on ne choisit pas le mode par lien symbolique
+    if [[ "${OLIX_INSTALL_MODE_CONFIG}" != "symlink" ]]; then
+        install_CopyConfiguration "$1" "$2" "$3"
+        return 0
+    fi
     [[ ! -f $1 ]] && logger_error "Le fichier $1 n'existe pas"
     ln -sf $1 $2 > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error
