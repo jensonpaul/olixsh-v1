@@ -1,0 +1,30 @@
+# Version 1.0
+
+- Forcer l'install des fichiers de conf en mode "symlink" avec le paramètre OLIX_INSTALL_MODE_CONFIG
+- Transformation de log error en warning pour éviter l'arrêt du script lors du backup
+- Ecriture du fichier README
+- Suppression de la configuration de sublime
+- Apache : installation du site par défaut
+- Merge branch 'master' of github.com:sabinus52/olixsh
+- Correction pour l'installation des fichiers de conf Apache 2.4
+- Prise en compte d'un script personnalisé pour l'installation d'un projet
+- Modification de l'installation de Postix via un relay avec authentification
+- Installation du certificat Apache
+- Corrections de bugs et changement de IFS dans le fichier exclude
+- Optimisation de la sauvegarde avec gestion des erreurs
+- Changement de l'implémentation des modules
+- Mode debug sur chaque fonction
+- Vérification de la présence des binaires lors de l'installation de oliXsh
+- Transfert FTP dans le module de backup
+- Ajout du rapport au format HTML
+- Temps d'éxecution de la sauvegarde
+- Création du module de sauvegarde
+- Module de synchro, resto et dump MySQL
+- Module de synchronisation de dossier
+- Module de synchronisation des fichiers d'un projet
+- Module installation d'un projet
+- Correction de la création du rôle MySQL de olix
+- Prise en charge du FQDN pour le fichier de conf principal
+- Module INSTALL d'un serveur Ubuntu
+- Ajout librairie mysql et correction du module d'instal olixsh
+- Base de l'interpréteur et Installation de olixsh dans le système
