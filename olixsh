@@ -19,8 +19,8 @@
 ###
 # Constantes
 ##
-OLIX_RELEASE=false
-OLIX_VERSION="2.0"
+OLIX_RELEASE=true
+OLIX_VERSION="1.0"
 OLIX_REVISION="28"
 
 

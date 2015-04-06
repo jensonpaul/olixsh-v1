@@ -47,16 +47,21 @@ function module_printList()
 {
     logger_debug "stdout_printList ()"
 
-    local MODULE_LIST=$(find ./modules -maxdepth 1 -mindepth 1 -type d)
-    for I in ${MODULE_LIST}; do
-    	echo -en ${Cjaune}$(stdout_strpad " $(basename ${I/-/:}) ${CVOID}" "25" ".")
-        if module_isExistConfiguration "$(basename $I)"; then
-        	source $I/${OLIX_MODULE_NAME_CONFIG}
-        	echo -e " : ${OLIX_MODULE_LABEL}"
+    while read I; do
+        local FIRST=${I:0:1}
+        if [[ ${FIRST} == "-" ]]; then
+            local SUBMENU=${I:1}
+            echo -en ${Cjaune}$(stdout_strpad " ${SUBMENU/-/:} ${CVOID}" "30" ".")
+            if module_isExistConfiguration ${SUBMENU}; then
+                source ./modules/${SUBMENU}/${OLIX_MODULE_NAME_CONFIG}
+                echo -e " : ${OLIX_MODULE_LABEL}"
+            else
+                echo -e " : ${Crouge}Pas de description${CVOID}"
+            fi
         else
-        	echo -e " : ${Crouge}Pas de description${CVOID}"
+            echo -e "${Cvert}${I} ${CVOID}"
         fi
-    done
+    done < ./modules/modules.lst
 }
 
 
@@ -74,7 +79,8 @@ function module_readChoice()
         echo -e "${CVIOLET} Liste des modules de ${CCYAN}oliXsh${CVOID}"
         echo -e "${CBLANC}===============================================================================${CVOID}"
         module_printList
-        echo -e " ${Cjaune}quit${CVOID}               : Quitter"
+        echo -e "${Cvert}Quitter ${CVOID}"
+        echo -e " ${Cjaune}quit${CVOID} .................. : Quitter"
         echo -en "${Cjaune}Ton choix ${CJAUNE}[q]${CVOID} : "
         read OLIX_MODULE
         case ${OLIX_MODULE} in
