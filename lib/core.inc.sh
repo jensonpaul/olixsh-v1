@@ -51,7 +51,7 @@ function core_checkIfRoot()
 function core_checkIfUser()
 {
     logger_debug "core_checkIfUser ()"
-    [[ ${LOGNAME} != ${OLIX_USER} ]] && logger_error "Seul l'utilisateur \"${SAPSAS_USER}\" peut exécuter ce script"
+    [[ ${LOGNAME} != ${OLIX_USER} ]] && logger_error "Seul l'utilisateur \"${OLIX_USER}\" peut exécuter ce script"
     return 0
 }
 

@@ -33,7 +33,7 @@ echo -e "${CBLANC}--------------------------------------------------------------
 # Installation
 ##
 logger_debug "Installation des packages SNMPD"
-apt-get --yes install snmpd
+apt-get --yes install snmp snmpd
 
 
 ###

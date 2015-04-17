@@ -89,18 +89,20 @@ done
 ###
 # Activation du site par défaut
 ##
-install_backupFileOriginal "/etc/apache2/sites-available/000-default.conf"
+if [[ -n ${OLIX_INSTALL_APACHE_VHOST_DEFAULT} ]]; then
+    install_backupFileOriginal "/etc/apache2/sites-available/000-default.conf"
 
-logger_debug "Effacement de /etc/apache2/sites-enabled/000-default.conf"
-rm -rf /etc/apache2/sites-enabled/000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
-[[ $? -ne 0 ]] && logger_error
+    logger_debug "Effacement de /etc/apache2/sites-enabled/000-default.conf"
+    rm -rf /etc/apache2/sites-enabled/000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
+    [[ $? -ne 0 ]] && logger_error
 
-install_linkNodeConfiguration "${__PATH_CONFIG}/default/${OLIX_INSTALL_APACHE_VHOST_DEFAULT}" "/etc/apache2/sites-available/000-default.conf"
+    install_linkNodeConfiguration "${__PATH_CONFIG}/default/${OLIX_INSTALL_APACHE_VHOST_DEFAULT}" "/etc/apache2/sites-available/000-default.conf"
 
-logger_debug "Activation du site 000-default.conf"
-a2ensite 000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
-[[ $? -ne 0 ]] && logger_error
-echo -e "Activation du site ${CCYAN}default.conf${CVOID} : ${CVERT}OK ...${CVOID}"
+    logger_debug "Activation du site 000-default.conf"
+    a2ensite 000-default.conf > ${OLIX_LOGGER_FILE_ERR} 2>&1
+    [[ $? -ne 0 ]] && logger_error
+    echo -e "Activation du site ${CCYAN}default.conf${CVOID} : ${CVERT}OK ...${CVOID}"
+fi
 
 
 ###
