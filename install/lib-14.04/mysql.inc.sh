@@ -51,12 +51,15 @@ if [ -d /home/mysql/mysql ]; then
 fi
 if [ "${REPONSE}" == "o" ]; then
     service mysql stop
-    logger_debug "Suppression de /home/mysql"
-    rm -rf /home/mysql > ${OLIX_LOGGER_FILE_ERR} 2>&1
-    [[ $? -ne 0 ]] && logger_error
-    logger_debug "Création de /home/mysql"
-    mkdir /home/mysql > ${OLIX_LOGGER_FILE_ERR} 2>&1
-    [[ $? -ne 0 ]] && logger_error
+    if [ -d /home/mysql ]; then
+        logger_debug "Suppression de /home/mysql"
+        rm -rf /home/mysql/* > ${OLIX_LOGGER_FILE_ERR} 2>&1
+        [[ $? -ne 0 ]] && logger_error
+    else
+        logger_debug "Création de /home/mysql"
+        mkdir /home/mysql > ${OLIX_LOGGER_FILE_ERR} 2>&1
+        [[ $? -ne 0 ]] && logger_error
+    fi
     logger_debug "Chown de /home/mysql"
     chown -R mysql:mysql /home/mysql > ${OLIX_LOGGER_FILE_ERR} 2>&1
     [[ $? -ne 0 ]] && logger_error

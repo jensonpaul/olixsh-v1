@@ -45,7 +45,7 @@ function module_execute()
 ##
 function module_printList()
 {
-    logger_debug "stdout_printList ()"
+    logger_debug "module_printList ()"
 
     while read I; do
         local FIRST=${I:0:1}
